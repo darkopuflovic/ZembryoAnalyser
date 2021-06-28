@@ -1,0 +1,211 @@
+﻿<ui:RibbonWindow   x:Class="ZembryoAnalyser.MainWindow"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:ui="clr-namespace:Crystalbyte.UI;assembly=Crystalbyte.Ribbon"
+                   xmlns:local="clr-namespace:ZembryoAnalyser"
+                   xmlns:oxy="http://oxyplot.org/wpf"
+                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                   mc:Ignorable="d"
+                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                   d:DataContext="{d:DesignInstance Type=local:StatusBarContent}"
+                   Name="window"
+        Title="Zembryo Analyser"
+        Icon="ZebraFish.ico"
+        Height="600"
+        Width="900"
+        MinHeight="600"
+        MinWidth="900"
+        Loaded="Window_Loaded"
+        SizeChanged="RibbonWindow_SizeChanged">
+    <ui:RibbonWindow.StatusBarItemsSource>
+        <local:StatusBarContent />
+    </ui:RibbonWindow.StatusBarItemsSource>
+    <ui:RibbonWindow.ApplicationMenu>
+        <ui:ApplicationMenu>
+            <ui:ApplicationMenuItem Header="Design">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Reset settings: " FontSize="18" Margin="3" Grid.Column="0" />
+                        <Button Content="Reset" FontSize="18" Width="100" Margin="3" HorizontalAlignment="Left" Click="Reset_Click" Grid.Column="1" />
+                    </Grid>
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Transparent chrome: " FontSize="18" Margin="3" Grid.Column="0" />
+                        <CheckBox Name="transparentChrome" Margin="0,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Click="TransparentChrome_Click" Grid.Column="1" />
+                    </Grid>
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Corner radius: " FontSize="18" Margin="3" Grid.Column="0" />
+                        <CheckBox Name="cornerRadius" Margin="0,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Click="CornerRadius_Click" Grid.Column="1" />
+                    </Grid>
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Rounded buttons: " FontSize="18" Margin="3" Grid.Column="0" />
+                        <CheckBox Name="roundedButtons" Margin="0,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Click="RoundedButtons_Click" Grid.Column="1" />
+                    </Grid>
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Inactive chrome: " FontSize="18" Margin="3" Grid.Column="0" />
+                        <CheckBox Name="enableInactive" Margin="0,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="EnableInactive_Checked" Unchecked="EnableInactive_Checked" Grid.Column="1" />
+                    </Grid>
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Color options: " FontSize="18" Margin="3" Grid.Column="0" />
+                        <Button Name="pickColor" Margin="0,8,0,0" Height="30" Width="30" HorizontalAlignment="Left" Style="{StaticResource ColorButtonStyle}" Click="PickColor_Click" Grid.Column="1">
+                            <Button.Background>
+                                <LinearGradientBrush>
+                                    <GradientStop Color="#FF0000" Offset="0.1" />
+                                    <GradientStop Color="#FF6600" Offset="0.2" />
+                                    <GradientStop Color="#FF9400" Offset="0.3" />
+                                    <GradientStop Color="#EEC500" Offset="0.4" />
+                                    <GradientStop Color="#E0E000" Offset="0.5" />
+                                    <GradientStop Color="#8CC700" Offset="0.6" />
+                                    <GradientStop Color="#0FAD00" Offset="0.7" />
+                                    <GradientStop Color="#00A3C7" Offset="0.8" />
+                                    <GradientStop Color="#0064B5" Offset="0.9" />
+                                    <GradientStop Color="#0010A5" Offset="1" />
+                                </LinearGradientBrush>
+                            </Button.Background>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </ui:ApplicationMenuItem>
+            <ui:ApplicationMenuItem Header="Application">
+                <StackPanel>
+                    <Grid Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Automatically detect region: " FontSize="18" Margin="3" Grid.Column="0" />
+                        <CheckBox Name="regionDetection" Margin="0,8,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" Click="RegionDetection_Click" Grid.Column="1" />
+                    </Grid>
+                </StackPanel>
+            </ui:ApplicationMenuItem>
+        </ui:ApplicationMenu>
+    </ui:RibbonWindow.ApplicationMenu>
+    <ui:RibbonWindow.Ribbon>
+        <ui:Ribbon SelectionChanged="Ribbon_SelectionChanged">
+            <ui:Ribbon.Triggers>
+                <EventTrigger RoutedEvent="ui:Ribbon.Loaded">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation From="0" To="1" Duration="0:0:0.7" Storyboard.TargetProperty="Opacity" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </ui:Ribbon.Triggers>
+            <ui:RibbonTab Name="videoTab" Header="Video">
+                <ui:RibbonPage>
+                    <ui:RibbonGroup Header="Video">
+                        <ui:RibbonButton Name="videoOpenButton" Content="Open" ImageSource="Pictures\Open.png" Command="{StaticResource OpenDocumentCommand}" />
+                        <ui:RibbonButton Name="videoCloseButton" Content="Close" IsEnabled="False" ImageSource="Pictures\Close.png" Command="{StaticResource CloseDocumentCommand}" />
+                    </ui:RibbonGroup>
+                    <ui:RibbonGroup Header="Calculation">
+                        <ui:RibbonButton Name="calculateDataButton" Content="Calculate Data" IsEnabled="False" ImageSource="Pictures\Calculate.png" Command="{StaticResource CalculateDataCommand}" />
+                    </ui:RibbonGroup>
+                </ui:RibbonPage>
+            </ui:RibbonTab>
+            <ui:RibbonTab Name="viewTab" Header="View">
+                <ui:RibbonPage>
+                    <ui:RibbonGroup Header="View">
+                        <ui:RibbonButton Name="viewVideoButton" Content="Video" IsEnabled="False" ImageSource="Pictures\Video.png" Command="{StaticResource ViewVideoCommand}" />
+                        <ui:RibbonButton Name="viewBPMButton" Content="BPM" IsEnabled="False" ImageSource="Pictures\HeartRate.png" Command="{StaticResource ViewBPMCommand}" />
+                        <ui:RibbonButton Name="viewDataGridButton" Content="Data" IsEnabled="False" ImageSource="Pictures\DocumentView.png" Command="{StaticResource ViewDataCommand}" />
+                        <ui:RibbonButton Name="viewPlotButton" Content="Plot" IsEnabled="False" ImageSource="Pictures\Graph.png" Command="{StaticResource ViewPlotCommand}" />
+                    </ui:RibbonGroup>
+                </ui:RibbonPage>
+            </ui:RibbonTab>
+            <ui:RibbonTab Name="editGeometryTab" Header="Edit Geometries">
+                <ui:RibbonPage>
+                    <ui:RibbonGroup Header="Edit Geometries">
+                        <ui:RibbonButton Name="addRectangle" Content="Rectangle" IsEnabled="False" ImageSource="Pictures\Rectangle.png" Command="{StaticResource AddRectangleCommand}" />
+                        <ui:RibbonButton Name="addEllipse" Content="Ellipse" IsEnabled="False" ImageSource="Pictures\Ellipse.png" Command="{StaticResource AddEllipseCommand}" />
+                        <ui:RibbonButton Name="addPolygon" Content="Polygon" IsEnabled="False" ImageSource="Pictures\Polygon.png" Command="{StaticResource AddPolygonCommand}" />
+                        <ui:RibbonButton Name="erase" Content="Erase" IsEnabled="False" ImageSource="Pictures\Clean.png" Command="{StaticResource EraseShapeCommand}" />
+                        <ui:RibbonButton Name="edit" Content="Edit" IsEnabled="False" ImageSource="Pictures\Edit.png" Command="{StaticResource EditShapeCommand}" />
+                    </ui:RibbonGroup>
+                </ui:RibbonPage>
+            </ui:RibbonTab>
+            <ui:RibbonTab Name="measure" Header="Measure">
+                <ui:RibbonPage>
+                    <ui:RibbonGroup Header="Measure">
+                        <ui:RibbonButton Name="lineMeasure" Content="Line" IsEnabled="False" ImageSource="Pictures\Line.png" Command="{StaticResource LineMeasureCommand}" />
+                        <ui:RibbonButton Name="polyLineMeasure" Content="Polyline" IsEnabled="False" ImageSource="Pictures\Polyline.png" Command="{StaticResource PolyLineMeasureCommand}" />
+                        <ui:RibbonButton Name="rectangleMeasure" Content="Rectangle" IsEnabled="False" ImageSource="Pictures\Rectangle.png" Command="{StaticResource RectangleMeasureCommand}" />
+                        <ui:RibbonButton Name="ellipseMeasure" Content="Ellipse" IsEnabled="False" ImageSource="Pictures\Ellipse.png" Command="{StaticResource EllipseMeasureCommand}" />
+                        <ui:RibbonButton Name="polygonMeasure" Content="Polygon" IsEnabled="False" ImageSource="Pictures\Polygon.png" Command="{StaticResource PolygonMeasureCommand}" />
+                    </ui:RibbonGroup>
+                </ui:RibbonPage>
+            </ui:RibbonTab>
+            <ui:RibbonTab Name="exportTab" Header="Export">
+                <ui:RibbonPage>
+                    <ui:RibbonGroup Header="Export">
+                        <ui:RibbonButton Name="exportCSVButton" Content="Csv" IsEnabled="False" ImageSource="Pictures\Export.png" Command="{StaticResource ExportCSVCommand}" />
+                        <ui:RibbonButton Name="exportXLSXButton" Content="Xlsx" IsEnabled="False" ImageSource="Pictures\Excel.png" Command="{StaticResource ExportXLSXCommand}" />
+                        <ui:RibbonButton Name="exportPNGButton" Content="Png" IsEnabled="False" ImageSource="Pictures\Image.png" Command="{StaticResource ExportPNGCommand}" />
+                        <ui:RibbonButton Name="exportJPGButton" Content="Jpg" IsEnabled="False" ImageSource="Pictures\Image.png" Command="{StaticResource ExportJPGCommand}" />
+                        <ui:RibbonButton Name="exportSVGButton" Content="Svg" IsEnabled="False" ImageSource="Pictures\Svg.png" Command="{StaticResource ExportSVGCommand}" />
+                        <ui:RibbonButton Name="exportJSONButton" Content="Json" IsEnabled="False" ImageSource="Pictures\Braces.png" Command="{StaticResource ExportJSONCommand}" />
+                    </ui:RibbonGroup>
+                </ui:RibbonPage>
+            </ui:RibbonTab>
+        </ui:Ribbon>
+    </ui:RibbonWindow.Ribbon>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Name="videoContent">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <Grid Name="canvasGrid">
+                    <Image Name="slika"></Image>
+                    <local:DrawingControl x:Name="drawingControl" IsHitTestVisible="False" />
+                    <local:MeasureControl x:Name="measureControl" IsHitTestVisible="False"/>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+        <Grid Grid.Row="0" Name="dataContent" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="2*" />
+            </Grid.RowDefinitions>
+            <Grid Name="titleGridBehind" Background="{DynamicResource StandardButtonBrush}" Grid.Row="0" Width="{Binding Path=ActualWidth, ElementName=dataGrid}" HorizontalAlignment="Left" Margin="0,0,19,0" />
+            <Grid Name="titleGrid" Background="{DynamicResource StandardButtonBrush}" Grid.Row="0" Width="{Binding Path=Width, ElementName=dataGrid}" HorizontalAlignment="Left" Margin="0,0,19,0" />
+            <DataGrid Name="dataGrid" ScrollViewer.ScrollChanged="DataGrid_ScrollChanged" AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True" CanUserReorderColumns="False" CanUserSortColumns="False" HeadersVisibility="Column" />
+        </Grid>
+        <Grid Grid.Row="0" Name="plotContent" Visibility="Collapsed">
+            <oxy:PlotView Name="plot" />
+        </Grid>
+        <Grid Grid.Row="0" Name="bpmContent" Visibility="Collapsed">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <TextBlock Name="bpmText" FontSize="36" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10, 10, 10, 10" />
+            </ScrollViewer>
+        </Grid>
+        <Slider Name="videoSlider" Visibility="Collapsed" TickFrequency="1" SmallChange="1" LargeChange="5" ValueChanged="VideoSlider_ValueChanged" Background="#50808080" Margin="20,0,20,0" Grid.Row="1" Minimum="0" Maximum="100" VerticalAlignment="Bottom"></Slider>
+        <TextBlock Name="timeText" Grid.Row="2" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10, 0, 10, 0" TextTrimming="CharacterEllipsis" Foreground="{Binding ElementName=window, Path=AccentBrush}" />
+        <TextBlock Name="filePathText" Grid.Row="3" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,10,10" TextTrimming="CharacterEllipsis" Foreground="{Binding ElementName=window, Path=AccentBrush}" />
+    </Grid>
+</ui:RibbonWindow>

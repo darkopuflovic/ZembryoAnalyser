@@ -1,0 +1,93 @@
+﻿<ui:RibbonWindow x:Class="ZembryoAnalyser.About"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="clr-namespace:Crystalbyte.UI;assembly=Crystalbyte.Ribbon"
+        Title="About"
+        Name="window"
+        Height="320" 
+        Width="480"
+        MinHeight="360"
+        MinWidth="480" 
+        MaxHeight="360" 
+        MaxWidth="480" 
+        RibbonIconVisible="False" 
+        ShowHelp="False" 
+        MinimizeVisible="False" 
+        MaximizeVisible="False" 
+        QuickAccessBarVisible="False" 
+        WindowStartupLocation="CenterOwner" 
+        FontSize="18" FontFamily="Consolas" 
+        KeyUp="RibbonWindow_KeyUp" 
+        ResizeMode="NoResize">
+    <Grid>
+        <Grid Margin="100,-20,100,120">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="50" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock TextAlignment="Center" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Name="lib" Text="Libraries used:" Margin="0,0,0,10" Foreground="{Binding ElementName=window, Path=AccentBrush}" />
+            <TextBlock Text="Crystalbyte ribbon" Grid.Column="0" Grid.Row="1" />
+            <TextBlock Grid.Column="1" Grid.Row="1">
+                <Hyperlink NavigateUri="https://github.com/crystalbyte/ribbon/" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None" ToolTip="Github">
+                    <Image Width="20" Height="20" Source="Pictures\Github.png"></Image>
+                </Hyperlink>
+            </TextBlock>
+            <TextBlock Text="OxyPlot" Grid.Column="0" Grid.Row="2" />
+            <TextBlock Grid.Column="1" Grid.Row="2">
+                <Hyperlink NavigateUri="https://github.com/oxyplot/oxyplot/" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None" ToolTip="Github">
+                    <Image Grid.Column="1" Width="20" Height="20" Source="Pictures\Github.png"></Image>
+                </Hyperlink>
+                <Hyperlink NavigateUri="https://www.nuget.org/packages/OxyPlot.Wpf/" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None" ToolTip="Nuget">
+                    <Image Grid.Column="1" Width="20" Height="20" Source="Pictures\Nuget.png"></Image>
+                </Hyperlink>
+            </TextBlock>
+            <TextBlock Text="OpenCVSharp" Grid.Column="0" Grid.Row="3" />
+            <TextBlock Grid.Column="1" Grid.Row="3">
+                <Hyperlink NavigateUri="https://github.com/shimat/opencvsharp/" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None" ToolTip="Github">
+                    <Image Grid.Column="1" Width="20" Height="20" Source="Pictures\Github.png"></Image>
+                </Hyperlink>
+                <Hyperlink NavigateUri="https://www.nuget.org/packages/OpenCvSharp4.Windows/" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None" ToolTip="Nuget">
+                    <Image Grid.Column="1" Width="20" Height="20" Source="Pictures\Nuget.png"></Image>
+                </Hyperlink>
+            </TextBlock>
+            <TextBlock Text="OpenXML SDK" Grid.Column="0" Grid.Row="4" />
+            <TextBlock Grid.Column="1" Grid.Row="4">
+                <Hyperlink NavigateUri="https://github.com/OfficeDev/Open-XML-SDK/" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None" ToolTip="Github">
+                    <Image Grid.Column="1" Width="20" Height="20" Source="Pictures\Github.png"></Image>
+                </Hyperlink>
+                <Hyperlink NavigateUri="https://www.nuget.org/packages/DocumentFormat.OpenXml/" RequestNavigate="Hyperlink_RequestNavigate" TextDecorations="None" ToolTip="Nuget">
+                    <Image Grid.Column="1" Width="20" Height="20" Source="Pictures\Nuget.png"></Image>
+                </Hyperlink>
+            </TextBlock>
+        </Grid>
+        <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
+            <TextBlock Text="Developed by:" TextAlignment="Center" Width="150" Height="25" Foreground="{Binding ElementName=window, Path=AccentBrush}" />
+            <StackPanel Orientation="Horizontal" Height="25" Margin="20,0,20,0">
+                <TextBlock Text="Darko Puflović" Width="150" Foreground="{Binding ElementName=window, Path=AccentBrush}" />
+                <TextBlock Margin="20,0,0,0" Foreground="{Binding ElementName=window, Path=AccentBrush}">
+                    <Hyperlink NavigateUri="mailto:darkopuflovic@gmail.com" RequestNavigate="Hyperlink_RequestNavigate">darkopuflovic@gmail.com</Hyperlink>
+                </TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Height="25" Margin="20,0,20,0">
+                <TextBlock Text="Nikola Mitović" Width="150" Foreground="{Binding ElementName=window, Path=AccentBrush}" />
+                <TextBlock Margin="20,0,0,0" Foreground="{Binding ElementName=window, Path=AccentBrush}">
+                    <Hyperlink NavigateUri="mailto:nikolamitovic@gmail.com" RequestNavigate="Hyperlink_RequestNavigate">nikolamitovic@gmail.com</Hyperlink>
+                </TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Height="25" Margin="20,0,20,0">
+                <TextBlock Text="Tatjana Mitović" Width="150" Foreground="{Binding ElementName=window, Path=AccentBrush}" />
+                <TextBlock Margin="20,0,0,0" Foreground="{Binding ElementName=window, Path=AccentBrush}">
+                    <Hyperlink NavigateUri="mailto:tatjana.mitovic00@gmail.com" RequestNavigate="Hyperlink_RequestNavigate">tatjana.mitovic00@gmail.com</Hyperlink>
+                </TextBlock>
+            </StackPanel>
+            <TextBlock Text="{Binding ElementName=window, Path=Year}" TextAlignment="Center" Width="150" Height="25" Foreground="{Binding ElementName=window, Path=AccentBrush}" />
+        </StackPanel>
+    </Grid>
+</ui:RibbonWindow>
