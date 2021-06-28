@@ -20,7 +20,6 @@ namespace ZembryoAnalyser
 
             var listWorksheetParts = new List<WorksheetPart>();
             WorksheetPart worksheetPart = default;
-            OpenXmlWriter openXMLWriter = default;
 
             for (int k = 0; k < data.Count; k++)
             {
@@ -30,73 +29,90 @@ namespace ZembryoAnalyser
 
                 listWorksheetParts.Add(worksheetPart);
 
-                openXMLWriter = OpenXmlWriter.Create(worksheetPart);
-                openXMLWriter.WriteStartElement(new Worksheet());
-                openXMLWriter.WriteStartElement(new SheetData());
+                var worksheet = new Worksheet();
 
-                var rowHeader = new List<OpenXmlAttribute>
+                var columns = new Columns();
+
+                var column = new Column
                 {
-                    new OpenXmlAttribute("r", null, "1")
+                    Min = 1,
+                    Max = 3,
+                    Width = 18,
+                    CustomWidth = true
                 };
 
-                var headerStyle = new List<OpenXmlAttribute>
+                columns.Append(column);
+
+                worksheet.Append(columns);
+
+                SheetData sheetData = new SheetData();
+
+                Row row = new Row();
+
+                row.Append(new Cell
                 {
-                    new OpenXmlAttribute("t", null, "str"),
-                    new OpenXmlAttribute("s", null, "1")
-                };
+                    DataType = CellValues.String,
+                    CellReference = $"A1",
+                    CellValue = new CellValue("Index"),
+                    StyleIndex = 1
+                });
 
-                openXMLWriter.WriteStartElement(new Row(), rowHeader);
+                row.Append(new Cell
+                {
+                    DataType = CellValues.String,
+                    CellReference = $"B1",
+                    CellValue = new CellValue("Time"),
+                    StyleIndex = 1
+                });
 
-                openXMLWriter.WriteStartElement(new Cell(), headerStyle);
-                openXMLWriter.WriteElement(new CellValue("Index"));
-                openXMLWriter.WriteEndElement();
+                row.Append(new Cell
+                {
+                    DataType = CellValues.String,
+                    CellReference = $"C1",
+                    CellValue = new CellValue("Value"),
+                    StyleIndex = 1
+                });
 
-                openXMLWriter.WriteStartElement(new Cell(), headerStyle);
-                openXMLWriter.WriteElement(new CellValue("Time"));
-                openXMLWriter.WriteEndElement();
-
-                openXMLWriter.WriteStartElement(new Cell(), headerStyle);
-                openXMLWriter.WriteElement(new CellValue("Value"));
-                openXMLWriter.WriteEndElement();
-
-                openXMLWriter.WriteEndElement();
+                sheetData.Append(row);
 
                 foreach (Data result in results)
                 {
-                    var rowAttribute = new List<OpenXmlAttribute>
+                    row = new Row();
+
+                    row.Append(new Cell
                     {
-                        new OpenXmlAttribute("r", null, (result.Index + 1).ToString(CultureInfo.InvariantCulture))
-                    };
+                        DataType = CellValues.String,
+                        CellReference = $"A{result.Index + 1}",
+                        CellValue = new CellValue(result.Index.ToString(CultureInfo.InvariantCulture)),
+                        StyleIndex = 0
+                    });
 
-                    openXMLWriter.WriteStartElement(new Row(), rowAttribute);
-
-                    var cellStyle = new List<OpenXmlAttribute>
+                    row.Append(new Cell
                     {
-                        new OpenXmlAttribute("t", null, "str")
-                    };
+                        DataType = CellValues.String,
+                        CellReference = $"B{result.Index + 1}",
+                        CellValue = new CellValue(result.Time.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture)),
+                        StyleIndex = 0
+                    });
 
-                    openXMLWriter.WriteStartElement(new Cell(), cellStyle);
-                    openXMLWriter.WriteElement(new CellValue(result.Index.ToString(CultureInfo.InvariantCulture)));
-                    openXMLWriter.WriteEndElement();
+                    row.Append(new Cell
+                    {
+                        DataType = CellValues.String,
+                        CellReference = $"C{result.Index + 1}",
+                        CellValue = new CellValue(Math.Round(result.DataValue, 2).ToString(CultureInfo.InvariantCulture)),
+                        StyleIndex = 0
+                    });
 
-                    openXMLWriter.WriteStartElement(new Cell(), cellStyle);
-                    openXMLWriter.WriteElement(new CellValue(result.Time.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture)));
-                    openXMLWriter.WriteEndElement();
-
-                    openXMLWriter.WriteStartElement(new Cell(), cellStyle);
-                    openXMLWriter.WriteElement(new CellValue(Math.Round(result.DataValue, 2).ToString(CultureInfo.InvariantCulture)));
-                    openXMLWriter.WriteEndElement();
-
-                    openXMLWriter.WriteEndElement();
+                    sheetData.Append(row);
                 }
 
-                openXMLWriter.WriteEndElement();
-                openXMLWriter.WriteEndElement();
+                worksheet.Append(sheetData);
 
-                openXMLWriter.Close();
+                worksheetPart.Worksheet = worksheet;
+                worksheetPart.Worksheet.Save();
             }
 
-            openXMLWriter = OpenXmlWriter.Create(excel.WorkbookPart);
+            var openXMLWriter = OpenXmlWriter.Create(excel.WorkbookPart);
 
             openXMLWriter.WriteStartElement(new Workbook());
             openXMLWriter.WriteStartElement(new Sheets());
