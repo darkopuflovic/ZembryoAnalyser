@@ -80,7 +80,7 @@ namespace ZembryoAnalyser
                 UnsetActivatedDeactivated(r);
             }));
         }
-        
+
         public void CanRun(bool cR)
         {
             canStartNewCommand = cR;

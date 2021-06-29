@@ -33,15 +33,33 @@ namespace ZembryoAnalyser
 
                 var columns = new Columns();
 
-                var column = new Column
+                var firstColumn = new Column
                 {
                     Min = 1,
-                    Max = 3,
-                    Width = 18,
+                    Max = 1,
+                    Width = 10,
                     CustomWidth = true
                 };
 
-                columns.Append(column);
+                var secondColumn = new Column
+                {
+                    Min = 2,
+                    Max = 2,
+                    Width = 20,
+                    CustomWidth = true
+                };
+
+                var thirdColumn = new Column
+                {
+                    Min = 3,
+                    Max = 3,
+                    Width = 15,
+                    CustomWidth = true
+                };
+
+                columns.Append(firstColumn);
+                columns.Append(secondColumn);
+                columns.Append(thirdColumn);
 
                 worksheet.Append(columns);
 
@@ -139,13 +157,24 @@ namespace ZembryoAnalyser
             var stylesheet = spreadsheet.WorkbookPart.AddNewPart<WorkbookStylesPart>();
             var workbookstylesheet = new Stylesheet();
 
-            var regularFont = new Font();
+            var regularFont = new Font
+            {
+                FontSize = new FontSize
+                {
+                    Val = 16
+                }
+            };
+
             var headerFont = new Font
             {
                 Bold = new Bold(),
                 Color = new DocumentFormat.OpenXml.Spreadsheet.Color
                 {
                     Rgb = "FF800000"
+                },
+                FontSize = new FontSize
+                {
+                    Val = 16
                 }
             };
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -31,9 +32,12 @@ namespace ZembryoAnalyser
         }
 
         private Shape editShape;
+        private Ellipse centroid;
+        private Point centroidPoint;
         private HitType mouseHitType;
         private Point lastPoint;
         private bool dragInProgress;
+        private bool centroidSelected;
         private GeometryType type;
         private Point anchorPoint;
         private Ellipse ellipse;
@@ -52,9 +56,12 @@ namespace ZembryoAnalyser
             Geometries = new List<Shape>();
             mouseHitType = HitType.None;
             dragInProgress = false;
+            centroidSelected = false;
             lastPoint = new Point();
             tempPoints = new List<Ellipse>();
             editShape = null;
+            centroid = null;
+            centroidPoint = default;
             colors = new Queue<(string name, Color color)>(new List<(string name, Color color)>
             {
                 ("Crimson", Colors.Crimson),
@@ -132,6 +139,11 @@ namespace ZembryoAnalyser
                     else
                     {
                         canvas.Children.Remove(ellipse);
+
+                        if (ellipse != null && !string.IsNullOrWhiteSpace(ellipse.Tag.ToString()) && ellipse.Stroke != null)
+                        {
+                            ReturnColor((name: ellipse.Tag.ToString().GetColorName(), color: ellipse.Stroke.GetColorFromBrush()));
+                        }
                     }
                     ellipse = null;
                     break;
@@ -143,17 +155,27 @@ namespace ZembryoAnalyser
                     else
                     {
                         canvas.Children.Remove(rectangle);
+
+                        if (rectangle != null && !string.IsNullOrWhiteSpace(rectangle.Tag.ToString()) && rectangle.Stroke != null)
+                        {
+                            ReturnColor((name: rectangle.Tag.ToString().GetColorName(), color: rectangle.Stroke.GetColorFromBrush()));
+                        }
                     }
                     rectangle = null;
                     break;
                 case GeometryType.Polygon:
-                    if (polygon != null && polygon.ActualHeight >= 5 && polygon.ActualWidth >= 5)
+                    if (polygon != null && polygon.ActualHeight >= 5 && polygon.ActualWidth >= 5 && polygon.Points.Count > 2)
                     {
                         Geometries.Add(polygon);
                     }
                     else
                     {
                         canvas.Children.Remove(polygon);
+
+                        if (polygon != null && !string.IsNullOrWhiteSpace(polygon.Tag.ToString()) && polygon.Stroke != null)
+                        {
+                            ReturnColor((name: polygon.Tag.ToString().GetColorName(), color: polygon.Stroke.GetColorFromBrush()));
+                        }
                     }
                     polygon = null;
                     segment.Points.Clear();
@@ -331,18 +353,6 @@ namespace ZembryoAnalyser
             _ = grid.Children.Add(editCanvas);
             _ = editCanvas.CaptureMouse();
 
-            editCanvas.MouseDown += (send, q) =>
-            {
-                if (q.RightButton == MouseButtonState.Pressed)
-                {
-                    editCanvas.Children.Clear();
-                    canvas.IsHitTestVisible = true;
-                    editCanvas.ReleaseMouseCapture();
-                    editShape = null;
-                    Cursor = Cursors.Arrow;
-                }
-            };
-
             tempPoints.Clear();
             PointCollection points = (editShape as Polygon).Points;
 
@@ -364,6 +374,20 @@ namespace ZembryoAnalyser
                 _ = editCanvas.Children.Add(eli);
                 tempPoints.Add(eli);
             }
+
+            centroid = new Ellipse
+            {
+                Height = 16,
+                Width = 16,
+                Stroke = Brushes.CornflowerBlue,
+                Fill = new SolidColorBrush(Color.FromArgb(192, 100, 149, 237))
+            };
+
+            centroidPoint = GetCentroid(points.ToList());
+            Canvas.SetLeft(centroid, centroidPoint.X - 8);
+            Canvas.SetTop(centroid, centroidPoint.Y - 8);
+
+            _ = editCanvas.Children.Add(centroid);
 
             editCanvas.MouseDown += (p, q) =>
             {
@@ -397,6 +421,19 @@ namespace ZembryoAnalyser
                 }
             };
 
+            editCanvas.MouseDown += (send, q) =>
+            {
+                if (q.RightButton == MouseButtonState.Pressed)
+                {
+                    editCanvas.Children.Clear();
+                    centroid = null;
+                    canvas.IsHitTestVisible = true;
+                    editCanvas.ReleaseMouseCapture();
+                    editShape = null;
+                    Cursor = Cursors.Arrow;
+                }
+            };
+
             editCanvas.MouseUp += (p, q) =>
             {
                 dragInProgress = false;
@@ -407,16 +444,42 @@ namespace ZembryoAnalyser
                 if (dragInProgress)
                 {
                     Point current = ReturnInsideImage(q.GetPosition(editCanvas));
-                    Ellipse el = tempPoints[dotIndex];
-                    Point po = points[dotIndex];
-                    points[dotIndex] = new Point(po.X + (current.X - lastPoint.X), po.Y + (current.Y - lastPoint.Y));
-                    Canvas.SetLeft(el, points[dotIndex].X - 4);
-                    Canvas.SetTop(el, points[dotIndex].Y - 4);
+
+                    if (centroidSelected)
+                    {
+                        if (CheckPolygonInsideImage(points.ToList(), current, lastPoint))
+                        {
+                            for (int i = 0; i < tempPoints.Count; i++)
+                            {
+                                Ellipse el = tempPoints[i];
+                                Point po = points[i];
+                                po = new Point(po.X + (current.X - lastPoint.X), po.Y + (current.Y - lastPoint.Y));
+                                Canvas.SetLeft(el, po.X - 4);
+                                Canvas.SetTop(el, po.Y - 4);
+                                points[i] = po;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Ellipse el = tempPoints[dotIndex];
+                        Point po = points[dotIndex];
+                        po = new Point(po.X + (current.X - lastPoint.X), po.Y + (current.Y - lastPoint.Y));
+                        Canvas.SetLeft(el, po.X - 4);
+                        Canvas.SetTop(el, po.Y - 4);
+                        points[dotIndex] = po;
+                    }
+
                     lastPoint = current;
+
+                    centroidPoint = GetCentroid(points.ToList());
+                    Canvas.SetLeft(centroid, centroidPoint.X - 4);
+                    Canvas.SetTop(centroid, centroidPoint.Y - 4);
                 }
                 else
                 {
                     bool presek = false;
+                    centroidSelected = false;
 
                     for (int i = 0; i < tempPoints.Count; i++)
                     {
@@ -429,7 +492,18 @@ namespace ZembryoAnalyser
                         }
                     }
 
-                    if (presek)
+                    Point c = ReturnInsideImage(q.GetPosition(this));
+
+                    if (Math.Abs(c.X - centroidPoint.X) < 9 && Math.Abs(c.Y - centroidPoint.Y) < 9)
+                    {
+                        centroidSelected = true;
+                    }
+
+                    if (centroidSelected)
+                    {
+                        Cursor = Cursors.SizeAll;
+                    }
+                    else if (presek)
                     {
                         Cursor = Cursors.SizeAll;
                     }
@@ -452,6 +526,48 @@ namespace ZembryoAnalyser
                     }
                 }
             };
+        }
+
+        private bool CheckPolygonInsideImage(List<Point> tempPoints, Point current, Point lastPoint)
+        {
+            double deltaX = current.X - lastPoint.X;
+            double deltaY = current.Y - lastPoint.Y;
+
+            foreach (Point temp in tempPoints)
+            {
+                double newX = temp.X + deltaX;
+                double newY = temp.Y + deltaY;
+
+                if (newX < 0 || newX > Width || newY < 0 || newY > Height)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static Point GetCentroid(List<Point> poly)
+        {
+            double accumulatedArea = 0.0f;
+            double centerX = 0.0f;
+            double centerY = 0.0f;
+
+            for (int i = 0, j = poly.Count - 1; i < poly.Count; j = i++)
+            {
+                double temp = (poly[i].X * poly[j].Y) - (poly[j].X * poly[i].Y);
+                accumulatedArea += temp;
+                centerX += (poly[i].X + poly[j].X) * temp;
+                centerY += (poly[i].Y + poly[j].Y) * temp;
+            }
+
+            if (Math.Abs(accumulatedArea) < 1E-7f)
+            {
+                return new Point();
+            }
+
+            accumulatedArea *= 3f;
+            return new Point((int)(centerX / accumulatedArea), (int)(centerY / accumulatedArea));
         }
 
         private static int FindIndexToInsertTo(PointCollection points, Point el)
@@ -841,6 +957,15 @@ namespace ZembryoAnalyser
                 default:
                     break;
             }
+        }
+
+        private void UserControl_LostMouseCapture(object sender, MouseEventArgs e)
+        {
+            GeometryFinished();
+            editCanvas.Children.Clear();
+            canvas.IsHitTestVisible = true;
+            editShape = null;
+            Cursor = Cursors.Arrow;
         }
     }
 }
