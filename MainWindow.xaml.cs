@@ -80,35 +80,7 @@ namespace ZembryoAnalyser
                 UnsetActivatedDeactivated(r);
             }));
         }
-
-        /*
-         * To do:
-         * Add button to insert new rectangle (for more than one fish), automatically adds location and size
-         * Show frame by frame video, and play video as in the player
-         * Add multiple shapes (circle, ellipse, polygon...)
-         * Export to CSV, JSON, XLSX, PNG, BMP, JPG, PDF, SVG
-         * Fix intensity (BPM) so only average (over entire video) changes in intensity count as heart beat. Smaller are probably just fluctuations...
-         * Show autodetect rectangles per frame
-         * Show autodetect recommenditions, per frame and video
-         * Better settings for DataGrid, Plot, Video...
-         * Move all the code not required inside MainWindow class or elsewhere to the separate files... (Logically divide code)
-         */
-
-        /*
-         * Later to do:
-         * Add ruler that can measure any length (straight or curved) (ratio on the video is set by user)
-         * Add autodetect of fish, embryo, and lines (curves) that represent it
-         * Calculate angle between head and body
-         * Calculate angle between body and tail
-         * Calculate size of the eyes
-         * Measure length of the body
-         * Embryo activity (movement...)
-         * Calculate Cardiac activity
-         * Blood flow and Gut flow
-         * Ability to perform analysis on the data from application using scripts (C#, R, Python...)
-         * https://www.youtube.com/watch?v=-0DqpgnBCh8
-         */
-
+        
         public void CanRun(bool cR)
         {
             canStartNewCommand = cR;
