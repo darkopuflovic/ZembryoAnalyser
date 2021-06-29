@@ -379,8 +379,9 @@ namespace ZembryoAnalyser
             {
                 Height = 16,
                 Width = 16,
-                Stroke = Brushes.CornflowerBlue,
-                Fill = new SolidColorBrush(Color.FromArgb(192, 100, 149, 237))
+                StrokeThickness = 2,
+                Stroke = new SolidColorBrush(Color.FromArgb(192, 156, 223, 149)),
+                Fill = new SolidColorBrush(Color.FromArgb(192, 63, 168, 51))
             };
 
             centroidPoint = GetCentroid(points.ToList());
