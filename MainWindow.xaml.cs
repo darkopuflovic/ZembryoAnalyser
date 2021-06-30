@@ -458,7 +458,7 @@ namespace ZembryoAnalyser
 
                     ((IDictionary<string, object>)row)[$"Data{j * 3}"] = dataRow.Index;
                     ((IDictionary<string, object>)row)[$"Data{(j * 3) + 1}"] = dataRow.Time.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture);
-                    ((IDictionary<string, object>)row)[$"Data{(j * 3) + 2}"] = Math.Round(dataRow.DataValue, 2);
+                    ((IDictionary<string, object>)row)[$"Data{(j * 3) + 2}"] = Math.Round(dataRow.DataValue, 2).ToString("N2", CultureInfo.InvariantCulture);
                     j++;
                 }
 
