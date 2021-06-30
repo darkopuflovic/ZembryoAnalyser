@@ -64,22 +64,22 @@ namespace ZembryoAnalyser
             centroidPoint = default;
             colors = new Queue<(string name, Color color)>(new List<(string name, Color color)>
             {
-                ("Crimson", Colors.Crimson),
-                ("DodgerBlue", Colors.DodgerBlue),
-                ("Lime", Colors.Lime),
-                ("DeepPink", Colors.DeepPink),
-                ("SteelBlue", Colors.SteelBlue),
-                ("SlateBlue", Colors.SlateBlue),
-                ("Tomato", Colors.Tomato),
-                ("MediumVioletRed", Colors.MediumVioletRed),
-                ("Gold", Colors.Gold),
-                ("Cyan", Colors.Cyan),
+                ("Aquamarine", Colors.Aquamarine),
+                ("Bisque", Colors.Bisque),
+                ("BlueViolet", Colors.BlueViolet),
+                ("Coral", Colors.Coral),
                 ("CornflowerBlue", Colors.CornflowerBlue),
-                ("Red", Colors.Red),
-                ("Green", Colors.Green),
-                ("Blue", Colors.Blue),
-                ("Chocolate", Colors.Chocolate),
-                ("DarkBlue", Colors.DarkBlue)
+                ("Crimson", Colors.Crimson),
+                ("DarkOrchid", Colors.DarkOrchid),
+                ("Salmon", Colors.Salmon),
+                ("LightSeaGreen", Colors.LightSeaGreen),
+                ("DarkTurquoise", Colors.DarkTurquoise),
+                ("DeepPink", Colors.DeepPink),
+                ("DeepSkyBlue", Colors.DeepSkyBlue),
+                ("Gold", Colors.Gold),
+                ("MediumSpringGreen", Colors.MediumSpringGreen),
+                ("CadetBlue", Colors.CadetBlue),
+                ("MediumSlateBlue", Colors.MediumSlateBlue)
             });
         }
 
@@ -320,7 +320,7 @@ namespace ZembryoAnalyser
 
                         if (editShape is Ellipse or Rectangle)
                         {
-                            EditRectangleAndEllipse();
+                            EditRectangleAndEllipse(editShape is Rectangle);
                         }
                         else if (editShape is Polygon)
                         {
@@ -380,8 +380,8 @@ namespace ZembryoAnalyser
                 Height = 16,
                 Width = 16,
                 StrokeThickness = 2,
-                Stroke = new SolidColorBrush(Color.FromArgb(192, 156, 223, 149)),
-                Fill = new SolidColorBrush(Color.FromArgb(192, 63, 168, 51))
+                Stroke = Brushes.Green,
+                Fill = new SolidColorBrush(Color.FromArgb(192, 34, 139, 34))
             };
 
             centroidPoint = GetCentroid(points.ToList());
@@ -637,13 +637,13 @@ namespace ZembryoAnalyser
             return Math.Sqrt((dx * dx) + (dy * dy));
         }
 
-        private void EditRectangleAndEllipse()
+        private void EditRectangleAndEllipse(bool rectangle)
         {
             var tempRectangle = new Rectangle
             {
                 Fill = Brushes.Transparent,
-                Stroke = Brushes.OrangeRed,
-                StrokeDashArray = new DoubleCollection { 5, 5, 1, 5 },
+                Stroke = rectangle ? Brushes.Indigo : Brushes.Firebrick,
+                StrokeDashArray = new DoubleCollection { 5, 2, 1, 2 },
                 StrokeThickness = 2
             };
 

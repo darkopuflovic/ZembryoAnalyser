@@ -194,7 +194,7 @@
             </Grid.RowDefinitions>
             <Grid Name="titleGridBehind" Background="{DynamicResource StandardButtonBrush}" Grid.Row="0" Width="{Binding Path=ActualWidth, ElementName=dataGrid}" HorizontalAlignment="Left" Margin="0,0,19,0" />
             <Grid Name="titleGrid" Background="{DynamicResource StandardButtonBrush}" Grid.Row="0" Width="{Binding Path=Width, ElementName=dataGrid}" HorizontalAlignment="Left" Margin="0,0,19,0" />
-            <DataGrid Name="dataGrid" ScrollViewer.ScrollChanged="DataGrid_ScrollChanged" AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True" CanUserReorderColumns="False" CanUserSortColumns="False" HeadersVisibility="Column" />
+            <DataGrid Name="dataGrid" MinColumnWidth="100" ColumnWidth="*" ScrollViewer.ScrollChanged="DataGrid_ScrollChanged" Grid.Row="1" IsReadOnly="True" CanUserReorderColumns="False" CanUserSortColumns="False" HeadersVisibility="Column" AutoGenerateColumns="False" />
         </Grid>
         <Grid Grid.Row="0" Name="plotContent" Visibility="Collapsed">
             <oxy:PlotView Name="plot" />
