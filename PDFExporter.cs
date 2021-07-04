@@ -1,0 +1,110 @@
+﻿using PdfSharp.Drawing;
+using PdfSharp.Drawing.Layout;
+using PdfSharp.Pdf;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Text;
+using System.Windows.Media;
+
+namespace ZembryoAnalyser
+{
+    public static class PDFExporter
+    {
+        public static void ExportPDF(string fileName, List<ResultSet> results, MemoryStream image)
+        {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+            var document = new PdfDocument();
+
+            foreach (ResultSet result in results)
+            {
+                PdfPage pdfPage = document.AddPage();
+                pdfPage.Height = 842;
+                pdfPage.Width = 595;
+
+                double pageMargin = 20;
+                double textMargin = 23;
+                double maxTableWidth = pdfPage.Width - (2 * pageMargin);
+                double valueColumnWidth = maxTableWidth / 3;
+                double rowHeight = 20;
+
+                var graph = XGraphics.FromPdfPage(pdfPage);
+                var tf = new XTextFormatter(graph);
+
+                var fontNaslov = new XFont("Times New Roman", 16, XFontStyle.Bold);
+                var fontPodNaslov = new XFont("Times New Roman", 12, XFontStyle.Regular);
+
+                Color col = result.Color.Color;
+                var headerFillColor = new XSolidBrush(XColor.FromArgb(col.R, col.G, col.B));
+                var headerTextColor = new XSolidBrush(ContrastColor(headerFillColor.Color));
+                var subTitleBrush = new XSolidBrush(XColor.FromArgb(255, 244, 176, 132));
+                XPen borderColor = XPens.Black;
+                XSolidBrush textColor = XBrushes.Black;
+
+                tf.Alignment = XParagraphAlignment.Center;
+
+                graph.DrawRectangle(borderColor, headerFillColor, pageMargin, pageMargin, maxTableWidth, rowHeight);
+                tf.DrawString(result.Name, fontNaslov, headerTextColor, new XRect(pageMargin, pageMargin, maxTableWidth, rowHeight));
+
+                tf.Alignment = XParagraphAlignment.Left;
+
+                graph.DrawRectangle(borderColor, subTitleBrush, pageMargin, pageMargin + rowHeight, valueColumnWidth, rowHeight);
+                tf.DrawString("Index", fontPodNaslov, XBrushes.Black, new XRect(textMargin, textMargin + rowHeight, valueColumnWidth, rowHeight));
+
+                graph.DrawRectangle(borderColor, subTitleBrush, pageMargin + valueColumnWidth, pageMargin + rowHeight, valueColumnWidth, rowHeight);
+                tf.DrawString("Time", fontPodNaslov, XBrushes.Black, new XRect(textMargin + valueColumnWidth, textMargin + rowHeight, valueColumnWidth, rowHeight));
+
+                graph.DrawRectangle(borderColor, subTitleBrush, pageMargin + (valueColumnWidth * 2), pageMargin + rowHeight, valueColumnWidth, rowHeight);
+                tf.DrawString("Value", fontPodNaslov, XBrushes.Black, new XRect(textMargin + (valueColumnWidth * 2), textMargin + rowHeight, valueColumnWidth, rowHeight));
+
+                int rowCount = 2;
+
+                foreach (Data data in result.Result)
+                {
+                    graph.DrawRectangle(borderColor, pageMargin, pageMargin + (rowHeight * rowCount), valueColumnWidth, rowHeight);
+                    tf.DrawString(data.Index.ToString(CultureInfo.InvariantCulture), fontPodNaslov, XBrushes.Black, new XRect(textMargin, textMargin + (rowHeight * rowCount), valueColumnWidth, rowHeight));
+
+                    graph.DrawRectangle(borderColor, pageMargin + valueColumnWidth, pageMargin + (rowHeight * rowCount), valueColumnWidth, rowHeight);
+                    tf.DrawString(data.Time.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture), fontPodNaslov, XBrushes.Black, new XRect(textMargin + valueColumnWidth, textMargin + (rowHeight * rowCount), valueColumnWidth, rowHeight));
+
+                    graph.DrawRectangle(borderColor, pageMargin + (valueColumnWidth * 2), pageMargin + (rowHeight * rowCount), valueColumnWidth, rowHeight);
+                    tf.DrawString(data.DataValue.ToString("N2", CultureInfo.InvariantCulture), fontPodNaslov, XBrushes.Black, new XRect(textMargin + (valueColumnWidth * 2), textMargin + (rowHeight * rowCount), valueColumnWidth, rowHeight));
+
+                    if (CheckNewPage(pdfPage, rowCount, pageMargin, rowHeight))
+                    {
+                        pdfPage = document.AddPage();
+                        graph = XGraphics.FromPdfPage(pdfPage);
+                        tf = new XTextFormatter(graph);
+                        rowCount = 0;
+                    }
+                    else
+                    {
+                        rowCount++;
+                    }
+                }
+            }
+
+            var img = XImage.FromStream(image);
+            PdfPage page = document.AddPage();
+            page.Height = img.PointHeight;
+            page.Width = img.PointWidth;
+            var graphics = XGraphics.FromPdfPage(page);
+            graphics.DrawImage(img, 0, 0);
+
+            document.Save(fileName);
+        }
+
+        private static bool CheckNewPage(PdfPage page, int rowCount, double pageMargin, double rowHeight)
+        {
+            double point = (pageMargin * 2) + (rowHeight * (rowCount + 1)) + rowHeight;
+            return point > page.Height;
+        }
+
+        private static XColor ContrastColor(XColor color)
+        {
+            double luma = ((0.299 * color.R) + ((0.587 * color.G) + (0.114 * color.B))) / 255;
+            return luma > 0.5 ? XColors.Black : XColors.White;
+        }
+    }
+}

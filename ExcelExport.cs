@@ -117,7 +117,7 @@ namespace ZembryoAnalyser
                     {
                         DataType = CellValues.String,
                         CellReference = $"C{result.Index + 1}",
-                        CellValue = new CellValue(Math.Round(result.DataValue, 2).ToString(CultureInfo.InvariantCulture)),
+                        CellValue = new CellValue(Math.Round(result.DataValue, 2).ToString("N2", CultureInfo.InvariantCulture)),
                         StyleIndex = 0
                     });
 

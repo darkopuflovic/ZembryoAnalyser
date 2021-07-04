@@ -1,4 +1,4 @@
-﻿using Crystalbyte.UI;
+﻿using Crystalbyte.Ribbon.UI;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -22,6 +22,7 @@ using System.IO;
 using System.Windows.Media.Imaging;
 using System.Threading.Tasks;
 using System.Text.Json;
+using System.ComponentModel;
 
 namespace ZembryoAnalyser
 {
@@ -46,6 +47,7 @@ namespace ZembryoAnalyser
         public BackgroundColorOptions BackgroundOptions { get; set; }
 
         public bool VideoLoaded { get; set; }
+        public bool WindowClosing { get; set; }
         public bool ShowDrawingButtons { get; set; }
         public bool ShowDataButtons { get; set; }
 
@@ -57,6 +59,7 @@ namespace ZembryoAnalyser
             numberOfFrames = 0;
             realNumberOfFrames = 0;
             loadingComplete = false;
+            WindowClosing = false;
 
             allRectangles = new List<Rectangle>();
 
@@ -84,7 +87,7 @@ namespace ZembryoAnalyser
         public void CanRun(bool cR)
         {
             canStartNewCommand = cR;
-            Dispatcher.Invoke(() =>
+            InvokeAction(() =>
             {
                 videoOpenButton.IsEnabled = cR;
                 videoCloseButton.IsEnabled = cR && VideoLoaded;
@@ -109,18 +112,31 @@ namespace ZembryoAnalyser
                 exportSVGButton.IsEnabled = cR && ShowDataButtons;
                 exportXLSXButton.IsEnabled = cR && ShowDataButtons;
                 exportJSONButton.IsEnabled = cR && ShowDataButtons;
+                exportPDFButton.IsEnabled = cR && ShowDataButtons;
             });
         }
 
+        public void InvokeAction(Action action)
+        {
+            if (WindowClosing)
+            {
+                return;
+            }
+            else
+            {
+                Dispatcher.Invoke(() => action());
+            }
+        }
+
         public void SetWaitingState(string info) =>
-            Dispatcher.Invoke(new Action(() =>
+            InvokeAction(new Action(() =>
             {
                 GetStatusBar().SetColor(Media.Color.FromArgb(255, 200, 100, 0));
                 ((StatusBarContent)StatusBarItemsSource).SetText(info);
             }));
 
         public void ReleaseWaitingState() =>
-            Dispatcher.Invoke(new Action(() =>
+            InvokeAction(new Action(() =>
             {
                 ResetStatusBarBrush();
                 ((StatusBarContent)StatusBarItemsSource).SetText("Ready");
@@ -174,7 +190,7 @@ namespace ZembryoAnalyser
 
             bool detect = true;
 
-            Dispatcher.Invoke(() =>
+            InvokeAction(() =>
             {
                 timeText.Text = $"00:00:00.000/{videoDuration.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture)}";
                 drawingControl.canvas.Children.Clear();
@@ -183,7 +199,7 @@ namespace ZembryoAnalyser
                 detect = regionDetection.IsChecked == true;
             });
 
-            Dispatcher.Invoke(() =>
+            InvokeAction(() =>
             {
                 SetNumberOfFrames(VideoLibrary.GetFrameCount(videoFileName));
                 dataContent.Visibility = Visibility.Collapsed;
@@ -255,7 +271,7 @@ namespace ZembryoAnalyser
                         string name = default;
                         SolidColorBrush color = default;
 
-                        Dispatcher.Invoke(() =>
+                        InvokeAction(() =>
                         {
                             Shapes.Shape el = drawingControl.Geometries.ElementAt(i++);
                             name = el.Tag.ToString();
@@ -281,7 +297,7 @@ namespace ZembryoAnalyser
 
         private void CalculateRectangleOnLoad()
         {
-            Dispatcher.Invoke(() =>
+            InvokeAction(() =>
             {
                 ShowProgress(true);
             });
@@ -291,13 +307,13 @@ namespace ZembryoAnalyser
 
             if (!rect.IsEmpty)
             {
-                Dispatcher.Invoke(() =>
+                InvokeAction(() =>
                 {
                     drawingControl.InsertRectangle(Media.Brushes.Yellow, new SolidColorBrush(Media.Color.FromArgb(128, 255, 255, 0)), "Rectangle (Yellow)", rect.X, rect.Y, rect.Width, rect.Height);
                 });
             }
 
-            Dispatcher.Invoke(() =>
+            InvokeAction(() =>
             {
                 ShowProgress(false);
             });
@@ -507,7 +523,7 @@ namespace ZembryoAnalyser
                 var color = result.Color.ToOxyColor();
                 var markerColor = OxyColor.FromArgb(128, color.R, color.G, color.B);
 
-                var s1 = new OxyPlot.Series.LineSeries
+                var series = new OxyPlot.Series.LineSeries
                 {
                     Title = $"Color intensity ({result.Name})",
                     StrokeThickness = 1,
@@ -517,10 +533,12 @@ namespace ZembryoAnalyser
                     MarkerType = MarkerType.Circle
                 };
 
+                series.TrackerFormatString = "{0}\n{1}:\t\t{2:0.00}\n{3}:\t{4:0.00}";
+
                 int numOfFrames = realNumberOfFrames <= 0 ? numberOfFrames : realNumberOfFrames;
 
-                s1.Points.AddRange(result.Result.Select(p => new DataPoint(Math.Round(ConvertToSecondsDouble(p.Index, numOfFrames), 2), Math.Round(p.DataValue, 2))).ToList());
-                model.Series.Add(s1);
+                series.Points.AddRange(result.Result.Select(p => new DataPoint(Math.Round(ConvertToSecondsDouble(p.Index, numOfFrames), 2), Math.Round(p.DataValue, 2))).ToList());
+                model.Series.Add(series);
             }
 
             if (videoDuration.TotalSeconds > 0)
@@ -571,7 +589,6 @@ namespace ZembryoAnalyser
                 return;
             }
 
-            Media.Color accentColor = AccentBrush is SolidColorBrush accentBrush ? accentBrush.Color : Colors.Crimson; ;
             Media.Color backColor = Background is SolidColorBrush backBrush ? backBrush.Color : Colors.White;
             Media.Color foreColor = Foreground is SolidColorBrush foreBrush ? foreBrush.Color : Colors.Black;
 
@@ -581,12 +598,6 @@ namespace ZembryoAnalyser
             plot.Model.TextColor = OxyColor.FromRgb(foreColor.R, foreColor.G, foreColor.B);
             plot.Model.Legends.ToList().ForEach(p => p.LegendBorder = foreOxy);
             plot.Model.PlotAreaBorderColor = foreOxy;
-
-            foreach (OxyPlot.Series.LineSeries s in plot.Model.Series)
-            {
-                s.Color = OxyColor.FromRgb(accentColor.R, accentColor.G, accentColor.B);
-                s.MarkerFill = OxyColor.FromArgb(128, accentColor.R, accentColor.G, accentColor.B);
-            }
 
             foreach (LinearAxis l in plot.Model.Axes)
             {
@@ -638,11 +649,11 @@ namespace ZembryoAnalyser
 
                     if (row.ContainsKey($"{el.Name} - Value"))
                     {
-                        row[$"{el.Name} - Value"] = Math.Round(dataRow.DataValue, 2).ToString(CultureInfo.InvariantCulture);
+                        row[$"{el.Name} - Value"] = Math.Round(dataRow.DataValue, 2).ToString("N2", CultureInfo.InvariantCulture);
                     }
                     else
                     {
-                        row.Add($"{el.Name} - Value", Math.Round(dataRow.DataValue, 2).ToString(CultureInfo.InvariantCulture));
+                        row.Add($"{el.Name} - Value", Math.Round(dataRow.DataValue, 2).ToString("N2", CultureInfo.InvariantCulture));
                     }
 
                     j++;
@@ -689,10 +700,52 @@ namespace ZembryoAnalyser
             }
         }
 
+        public void ExportPDF()
+        {
+            Visibility visibility = plotContent.Visibility;
+
+            if (visibility == Visibility.Collapsed)
+            {
+                plotContent.Visibility = Visibility.Hidden;
+            }
+
+            var sfd = new SaveFileDialog
+            {
+                Filter = "PDF file|*.pdf"
+            };
+
+            if (sfd.ShowDialog().HasValue)
+            {
+                try
+                {
+                    var exporter = new OxyPlot.Wpf.PngExporter
+                    {
+                        Width = (int)plot.ActualWidth * 2,
+                        Height = (int)plot.ActualHeight * 2
+                    };
+
+                    using var image = new MemoryStream();
+                    exporter.Export(plot.ActualModel, image);
+
+                    PDFExporter.ExportPDF(sfd.FileName, allResults, image);
+                }
+                catch (Exception e)
+                {
+                    ErrorMessage("Unable to save PDF file. " + e.Message);
+                }
+            }
+
+            plotContent.Visibility = visibility;
+        }
+
         public void ExportPNG()
         {
             Visibility visibility = plotContent.Visibility;
-            plotContent.Visibility = Visibility.Visible;
+
+            if (visibility == Visibility.Collapsed)
+            {
+                plotContent.Visibility = Visibility.Hidden;
+            }
 
             var sfd = new SaveFileDialog
             {
@@ -723,7 +776,11 @@ namespace ZembryoAnalyser
         public void ExportJPG()
         {
             Visibility visibility = plotContent.Visibility;
-            plotContent.Visibility = Visibility.Visible;
+
+            if (visibility == Visibility.Collapsed)
+            {
+                plotContent.Visibility = Visibility.Hidden;
+            }
 
             var sfd = new SaveFileDialog
             {
@@ -760,7 +817,11 @@ namespace ZembryoAnalyser
         public void ExportSVG()
         {
             Visibility visibility = plotContent.Visibility;
-            plotContent.Visibility = Visibility.Visible;
+
+            if (visibility == Visibility.Collapsed)
+            {
+                plotContent.Visibility = Visibility.Hidden;
+            }
 
             var sfd = new SaveFileDialog
             {
@@ -846,6 +907,9 @@ namespace ZembryoAnalyser
             loadingComplete = true;
             canStartNewCommand = true;
         }
+
+        private void Window_Closing(object sender, CancelEventArgs e) =>
+            WindowClosing = true;
 
         private void SystemEvents_UserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
         {
@@ -1082,6 +1146,8 @@ namespace ZembryoAnalyser
                 Media.Color aC = brush.Color;
                 Application.Current.Resources["UnfocusedAccentColor"] = Media.Color.FromArgb(128, aC.R, aC.G, aC.B);
                 Application.Current.Resources["AccentColor"] = aC;
+
+                RibbonButtonPressedBrush = new SolidColorBrush(Media.Color.FromArgb(96, aC.R, aC.G, aC.G));
             }
 
             PlotColors();
@@ -1126,6 +1192,7 @@ namespace ZembryoAnalyser
             rw.SetResourceReference(HoverBrushProperty, "HoverBrush");
             rw.Resources = Resources;
             rw.Icon = Icon;
+
             if (ColoredChrome)
             {
                 rw.SetColoredChrome();

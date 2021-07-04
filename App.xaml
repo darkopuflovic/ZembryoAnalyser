@@ -34,6 +34,7 @@
         <local:ExportJPGCommand x:Key="ExportJPGCommand" />
         <local:ExportSVGCommand x:Key="ExportSVGCommand" />
         <local:ExportJSONCommand x:Key="ExportJSONCommand" />
+        <local:ExportPDFCommand x:Key="ExportPDFCommand" />
 
         <SolidColorBrush x:Key="AccentBrush" Color="#FF982FFF" />
         <SolidColorBrush x:Key="InactiveBrush" Color="#FF5B268E" />
@@ -474,7 +475,7 @@
                 </Trigger>
                 <Trigger Property="IsFocused" Value="True">
                     <Setter Property="Background" Value="{DynamicResource StandardButtonBrush}"/>
-                    <Setter Property="BorderBrush" Value="{DynamicResource PressedButtonBrush}" />
+                    <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -551,7 +552,7 @@
                                 </MultiTrigger.Setters>
                             </MultiTrigger>
                             <Trigger Property="IsFocused" Value="True">
-                                <Setter Property="BorderBrush" Value="{DynamicResource PressedButtonBrush}" />
+                                <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="BorderBrush" Value="{DynamicResource HoverButtonBrush}" />
@@ -600,7 +601,7 @@
                                 <Setter TargetName="CheckMark" Property="Visibility" Value="Collapsed" />
                             </Trigger>
                             <Trigger Property="IsFocused" Value="true">
-                                <Setter Property="Background" Value="{DynamicResource PressedButtonBrush}" />
+                                <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="true">
                                 <Setter Property="BorderBrush" Value="{DynamicResource HoverButtonBrush}" />
@@ -634,8 +635,8 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsHighlighted" Value="true">
-                                <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource PressedButtonBrush}"/>
-                                <Setter TargetName="Border" Property="Background" Value="{DynamicResource PressedButtonBrush}"/>
+                                <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                <Setter TargetName="Border" Property="Background" Value="{DynamicResource AccentBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -773,7 +774,7 @@
                                 <Setter TargetName="DropDownBorder" Property="Margin" Value="0,2,0,0" />
                             </Trigger>
                             <Trigger SourceName="Popup" Property="IsOpen" Value="true">
-                                <Setter TargetName="ToggleButton" Property="Background" Value="{DynamicResource PressedButtonBrush}" />
+                                <Setter TargetName="ToggleButton" Property="Background" Value="{DynamicResource AccentBrush}" />
                             </Trigger>
                             <Trigger Property="IsEditable" Value="true">
                                 <Setter Property="IsTabStop" Value="false"/>
@@ -781,7 +782,7 @@
                                 <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden"/>
                             </Trigger>
                             <Trigger Property="IsFocused" Value="True">
-                                <Setter TargetName="ToggleButton" Property="Background" Value="{DynamicResource PressedButtonBrush}" />
+                                <Setter TargetName="ToggleButton" Property="Background" Value="{DynamicResource AccentBrush}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -1095,7 +1096,7 @@
                                 <Setter Property="Background" Value="{DynamicResource HoverButtonBrush}" />
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource PressedButtonBrush}" />
+                                <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>
@@ -1114,7 +1115,7 @@
                                 <Setter Property="Background" Value="{DynamicResource HoverButtonBrush}" />
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource PressedButtonBrush}" />
+                                <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>

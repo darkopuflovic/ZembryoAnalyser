@@ -616,4 +616,26 @@ namespace ZembryoAnalyser
             }
         }
     }
+
+    public sealed class ExportPDFCommand : ICommand
+    {
+        public bool CanExecute(object parameter) => true;
+
+        public event EventHandler CanExecuteChanged;
+
+        public void OnCanExecuteChanged() =>
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+
+        public void Execute(object parameter)
+        {
+            var main = (MainWindow)Application.Current.MainWindow;
+
+            if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
+            {
+                main.CanRun(false);
+                main.ExportPDF();
+                main.CanRun(true);
+            }
+        }
+    }
 }

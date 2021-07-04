@@ -1,7 +1,7 @@
 ﻿<ui:RibbonWindow   x:Class="ZembryoAnalyser.MainWindow"
                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                   xmlns:ui="clr-namespace:Crystalbyte.UI;assembly=Crystalbyte.Ribbon"
+                   xmlns:ui="clr-namespace:Crystalbyte.Ribbon.UI;assembly=Crystalbyte.Ribbon"
                    xmlns:local="clr-namespace:ZembryoAnalyser"
                    xmlns:oxy="http://oxyplot.org/wpf"
                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -16,7 +16,11 @@
         MinHeight="600"
         MinWidth="900"
         Loaded="Window_Loaded"
+        Closing="Window_Closing"
         SizeChanged="RibbonWindow_SizeChanged">
+    <ui:RibbonWindow.Resources>
+        <ResourceDictionary Source="IconsDirectory.xaml" />
+    </ui:RibbonWindow.Resources>
     <ui:RibbonWindow.StatusBarItemsSource>
         <local:StatusBarContent />
     </ui:RibbonWindow.StatusBarItemsSource>
@@ -117,55 +121,156 @@
             <ui:RibbonTab Name="videoTab" Header="Video">
                 <ui:RibbonPage>
                     <ui:RibbonGroup Header="Video">
-                        <ui:RibbonButton Name="videoOpenButton" Content="Open" ImageSource="Pictures\Open.png" Command="{StaticResource OpenDocumentCommand}" />
-                        <ui:RibbonButton Name="videoCloseButton" Content="Close" IsEnabled="False" ImageSource="Pictures\Close.png" Command="{StaticResource CloseDocumentCommand}" />
+                        <ui:RibbonButton Name="videoOpenButton" Width="70" Content="Open" Command="{StaticResource OpenDocumentCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource OpenDocumentButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
+                        <ui:RibbonButton Name="videoCloseButton" Width="70" Content="Close" IsEnabled="False" Command="{StaticResource CloseDocumentCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource CloseDocumentButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
                     </ui:RibbonGroup>
-                    <ui:RibbonGroup Header="Calculation">
-                        <ui:RibbonButton Name="calculateDataButton" Content="Calculate Data" IsEnabled="False" ImageSource="Pictures\Calculate.png" Command="{StaticResource CalculateDataCommand}" />
+                    <ui:RibbonGroup Header="Data Calculation">
+                        <ui:RibbonButton Name="calculateDataButton" Width="80" Content="Calculate" IsEnabled="False" Command="{StaticResource CalculateDataCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource CalculateDataButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
                     </ui:RibbonGroup>
                 </ui:RibbonPage>
             </ui:RibbonTab>
             <ui:RibbonTab Name="viewTab" Header="View">
                 <ui:RibbonPage>
                     <ui:RibbonGroup Header="View">
-                        <ui:RibbonButton Name="viewVideoButton" Content="Video" IsEnabled="False" ImageSource="Pictures\Video.png" Command="{StaticResource ViewVideoCommand}" />
-                        <ui:RibbonButton Name="viewBPMButton" Content="BPM" IsEnabled="False" ImageSource="Pictures\HeartRate.png" Command="{StaticResource ViewBPMCommand}" />
-                        <ui:RibbonButton Name="viewDataGridButton" Content="Data" IsEnabled="False" ImageSource="Pictures\DocumentView.png" Command="{StaticResource ViewDataCommand}" />
-                        <ui:RibbonButton Name="viewPlotButton" Content="Plot" IsEnabled="False" ImageSource="Pictures\Graph.png" Command="{StaticResource ViewPlotCommand}" />
+                        <ui:RibbonButton Name="viewVideoButton" Width="70" Content="Video" IsEnabled="False" Command="{StaticResource ViewVideoCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource ViewVideoButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
+                        <ui:RibbonButton Name="viewBPMButton" Width="70" Content="BPM" IsEnabled="False" Command="{StaticResource ViewBPMCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource ViewBPMButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
+                        <ui:RibbonButton Name="viewDataGridButton" Width="70" Content="Data" IsEnabled="False" Command="{StaticResource ViewDataCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource ViewDataGridButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
+                        <ui:RibbonButton Name="viewPlotButton" Width="70" Content="Plot" IsEnabled="False" Command="{StaticResource ViewPlotCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource ViewPlotButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
                     </ui:RibbonGroup>
                 </ui:RibbonPage>
             </ui:RibbonTab>
             <ui:RibbonTab Name="editGeometryTab" Header="Edit Geometries">
                 <ui:RibbonPage>
                     <ui:RibbonGroup Header="Edit Geometries">
-                        <ui:RibbonButton Name="addRectangle" Content="Rectangle" IsEnabled="False" ImageSource="Pictures\Rectangle.png" Command="{StaticResource AddRectangleCommand}" />
-                        <ui:RibbonButton Name="addEllipse" Content="Ellipse" IsEnabled="False" ImageSource="Pictures\Ellipse.png" Command="{StaticResource AddEllipseCommand}" />
-                        <ui:RibbonButton Name="addPolygon" Content="Polygon" IsEnabled="False" ImageSource="Pictures\Polygon.png" Command="{StaticResource AddPolygonCommand}" />
-                        <ui:RibbonButton Name="erase" Content="Erase" IsEnabled="False" ImageSource="Pictures\Clean.png" Command="{StaticResource EraseShapeCommand}" />
-                        <ui:RibbonButton Name="edit" Content="Edit" IsEnabled="False" ImageSource="Pictures\Edit.png" Command="{StaticResource EditShapeCommand}" />
+                        <ui:RibbonButton Name="addRectangle" Width="70" Content="Rectangle" IsEnabled="False" Command="{StaticResource AddRectangleCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource RectangleCreateButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
+                        <ui:RibbonButton Name="addEllipse" Width="70" Content="Ellipse" IsEnabled="False" Command="{StaticResource AddEllipseCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource EllipseCreateButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
+                        <ui:RibbonButton Name="addPolygon" Width="70" Content="Polygon" IsEnabled="False" Command="{StaticResource AddPolygonCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource PolygonCreateButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
+                        <ui:RibbonButton Name="erase" Width="70" Content="Erase" IsEnabled="False" Command="{StaticResource EraseShapeCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource EraseButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
+                        <ui:RibbonButton Name="edit" Width="70" Content="Edit" IsEnabled="False" Command="{StaticResource EditShapeCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource EditButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
                     </ui:RibbonGroup>
                 </ui:RibbonPage>
             </ui:RibbonTab>
             <ui:RibbonTab Name="measure" Header="Measure">
                 <ui:RibbonPage>
                     <ui:RibbonGroup Header="Measure">
-                        <ui:RibbonButton Name="lineMeasure" Content="Line" IsEnabled="False" ImageSource="Pictures\Line.png" Command="{StaticResource LineMeasureCommand}" />
-                        <ui:RibbonButton Name="polyLineMeasure" Content="Polyline" IsEnabled="False" ImageSource="Pictures\Polyline.png" Command="{StaticResource PolyLineMeasureCommand}" />
-                        <ui:RibbonButton Name="rectangleMeasure" Content="Rectangle" IsEnabled="False" ImageSource="Pictures\Rectangle.png" Command="{StaticResource RectangleMeasureCommand}" />
-                        <ui:RibbonButton Name="ellipseMeasure" Content="Ellipse" IsEnabled="False" ImageSource="Pictures\Ellipse.png" Command="{StaticResource EllipseMeasureCommand}" />
-                        <ui:RibbonButton Name="polygonMeasure" Content="Polygon" IsEnabled="False" ImageSource="Pictures\Polygon.png" Command="{StaticResource PolygonMeasureCommand}" />
+                        <ui:RibbonButton Name="lineMeasure" Width="70" Content="Line" IsEnabled="False" Command="{StaticResource LineMeasureCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource LineMeasureButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
+                        <ui:RibbonButton Name="polyLineMeasure" Width="70" Content="Polyline" IsEnabled="False" Command="{StaticResource PolyLineMeasureCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource PolylineMeasureButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
+                        <ui:RibbonButton Name="rectangleMeasure" Width="70" Content="Rectangle" IsEnabled="False" Command="{StaticResource RectangleMeasureCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource RectangleMeasureButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
+                        <ui:RibbonButton Name="ellipseMeasure" Width="70" Content="Ellipse" IsEnabled="False" Command="{StaticResource EllipseMeasureCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource EllipseMeasureButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
+                        <ui:RibbonButton Name="polygonMeasure" Width="70" Content="Polygon" IsEnabled="False" Command="{StaticResource PolygonMeasureCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource PolygonMeasureButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
                     </ui:RibbonGroup>
                 </ui:RibbonPage>
             </ui:RibbonTab>
             <ui:RibbonTab Name="exportTab" Header="Export">
                 <ui:RibbonPage>
-                    <ui:RibbonGroup Header="Export">
-                        <ui:RibbonButton Name="exportCSVButton" Content="Csv" IsEnabled="False" ImageSource="Pictures\Export.png" Command="{StaticResource ExportCSVCommand}" />
-                        <ui:RibbonButton Name="exportXLSXButton" Content="Xlsx" IsEnabled="False" ImageSource="Pictures\Excel.png" Command="{StaticResource ExportXLSXCommand}" />
-                        <ui:RibbonButton Name="exportPNGButton" Content="Png" IsEnabled="False" ImageSource="Pictures\Image.png" Command="{StaticResource ExportPNGCommand}" />
-                        <ui:RibbonButton Name="exportJPGButton" Content="Jpg" IsEnabled="False" ImageSource="Pictures\Image.png" Command="{StaticResource ExportJPGCommand}" />
-                        <ui:RibbonButton Name="exportSVGButton" Content="Svg" IsEnabled="False" ImageSource="Pictures\Svg.png" Command="{StaticResource ExportSVGCommand}" />
-                        <ui:RibbonButton Name="exportJSONButton" Content="Json" IsEnabled="False" ImageSource="Pictures\Braces.png" Command="{StaticResource ExportJSONCommand}" />
+                    <ui:RibbonGroup Header="Pdf">
+                        <ui:RibbonButton Name="exportPDFButton" Width="80" Content="Pdf" IsEnabled="False" Command="{StaticResource ExportPDFCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource ExportPDFButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
+                    </ui:RibbonGroup>
+                    <ui:RibbonGroup Header="Data">
+                        <ui:RibbonButton Name="exportCSVButton" Width="70" Content="Csv" IsEnabled="False" Command="{StaticResource ExportCSVCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource ExportCSVButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
+                        <ui:RibbonButton Name="exportXLSXButton" Width="70" Content="Xlsx" IsEnabled="False" Command="{StaticResource ExportXLSXCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource ExportXLSXButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
+                        <ui:RibbonButton Name="exportJSONButton" Width="70" Content="Json" IsEnabled="False" Command="{StaticResource ExportJSONCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource ExportJSONButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
+                    </ui:RibbonGroup>
+                    <ui:RibbonGroup Header="Image">
+                        <ui:RibbonButton Name="exportPNGButton" Width="70" Content="Png" IsEnabled="False" Command="{StaticResource ExportPNGCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource ExportPNGButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
+                        <ui:RibbonButton Name="exportJPGButton" Width="70" Content="Jpg" IsEnabled="False" Command="{StaticResource ExportJPGCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource ExportJPGButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
+                        <ui:RibbonButton Name="exportSVGButton" Width="70" Content="Svg" IsEnabled="False" Command="{StaticResource ExportSVGCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource ExportSVGButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
                     </ui:RibbonGroup>
                 </ui:RibbonPage>
             </ui:RibbonTab>

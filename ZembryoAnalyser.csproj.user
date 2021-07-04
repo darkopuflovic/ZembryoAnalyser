@@ -24,6 +24,9 @@
     <Page Update="DrawingControl.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="IconsDirectory.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>

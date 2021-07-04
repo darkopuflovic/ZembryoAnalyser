@@ -155,7 +155,7 @@ namespace ZembryoAnalyser
 
             while (lastVideo.Grab() && lastVideo.Retrieve(frame))
             {
-                main.Dispatcher.Invoke(() =>
+                main.InvokeAction(() =>
                 {
                     main.SetProgressValue((double)current / max * 100);
                 });
@@ -244,14 +244,14 @@ namespace ZembryoAnalyser
                 if (s is ShapeRectangle rc)
                 {
                     int x = 0, y = 0, width = 0, height = 0;
-                    main.Dispatcher.Invoke(() =>
+                    main.InvokeAction(() =>
                     {
                         x = (int)Canvas.GetLeft(rc);
                         y = (int)Canvas.GetTop(rc);
                         width = (int)rc.Width;
                         height = (int)rc.Height;
                     });
-                    List<int> indexes = new List<int>();
+                    var indexes = new List<int>();
                     var r = new Rectangle(x, y, width, height);
 
                     for (int i = 0; i < lastVideo.FrameHeight; i++)
@@ -260,7 +260,7 @@ namespace ZembryoAnalyser
                         {
                             if (r.Contains(j, i))
                             {
-                                indexes.Add(i * lastVideo.FrameWidth + j);
+                                indexes.Add((i * lastVideo.FrameWidth) + j);
                             }
                         }
                     }
@@ -270,14 +270,14 @@ namespace ZembryoAnalyser
                 else if (s is ShapeEllipse el)
                 {
                     int x = 0, y = 0, width = 0, height = 0;
-                    main.Dispatcher.Invoke(() =>
+                    main.InvokeAction(() =>
                     {
                         x = (int)Canvas.GetLeft(el);
                         y = (int)Canvas.GetTop(el);
                         width = (int)el.Width;
                         height = (int)el.Height;
                     });
-                    List<int> indexes = new List<int>();
+                    var indexes = new List<int>();
                     var r = new Rectangle(x, y, width, height);
 
                     for (int i = 0; i < lastVideo.FrameHeight; i++)
@@ -286,7 +286,7 @@ namespace ZembryoAnalyser
                         {
                             if (r.IsPointInEllipse(j, i))
                             {
-                                indexes.Add(i * lastVideo.FrameWidth + j);
+                                indexes.Add((i * lastVideo.FrameWidth) + j);
                             }
                         }
                     }
@@ -297,12 +297,12 @@ namespace ZembryoAnalyser
                 {
                     System.Drawing.Point[] polygon = default;
 
-                    main.Dispatcher.Invoke(() =>
+                    main.InvokeAction(() =>
                     {
                         polygon = sp.Points.Select(p => new System.Drawing.Point((int)p.X, (int)p.Y)).ToArray();
                     });
 
-                    List<int> indexes = new List<int>();
+                    var indexes = new List<int>();
 
                     for (int i = 0; i < lastVideo.FrameHeight; i++)
                     {
@@ -310,7 +310,7 @@ namespace ZembryoAnalyser
                         {
                             if (polygon.IsPointInPolygon(j, i))
                             {
-                                indexes.Add(i * lastVideo.FrameWidth + j);
+                                indexes.Add((i * lastVideo.FrameWidth) + j);
                             }
                         }
                     }
@@ -323,22 +323,22 @@ namespace ZembryoAnalyser
 
             while (lastVideo.Grab() && lastVideo.Retrieve(image))
             {
-                main.Dispatcher.Invoke(() =>
+                main.InvokeAction(() =>
                 {
                     main.SetProgressValue((double)current / maxFrames * 100);
                 });
 
                 for (int i = 0; i < shapeCount; i++)
                 {
-                    if (image.GetArray<Vec3b>(out var array))
+                    if (image.GetArray(out Vec3b[] array))
                     {
-                        var indexes = shapeIndexes.ElementAt(i);
+                        List<int> indexes = shapeIndexes.ElementAt(i);
                         double sum = 0;
 
-                        foreach (var ind in indexes)
+                        foreach (int ind in indexes)
                         {
-                            var c = array[ind];
-                            sum += ((c.Item0 + c.Item1 + c.Item2) / 3);
+                            Vec3b c = array[ind];
+                            sum += (c.Item0 + c.Item1 + c.Item2) / 3;
                         }
 
                         result.ElementAt(i).Add(sum / indexes.Count);
