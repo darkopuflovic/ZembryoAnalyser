@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -7,8 +9,10 @@ namespace ZembryoAnalyser
 {
     public static class CsvExport
     {
-        public static void ExportCsv(string fileName, List<Dictionary<string, string>> data)
+        public static void ExportCsv(string fileName, List<ResultSet> results)
         {
+            List<Dictionary<string, string>> data = GetValues(results);
+
             var sb = new StringBuilder();
 
             Dictionary<string, string> el = data.FirstOrDefault();
@@ -24,6 +28,57 @@ namespace ZembryoAnalyser
             }
 
             File.WriteAllText(fileName, sb.ToString());
+        }
+
+        public static List<Dictionary<string, string>> GetValues(List<ResultSet> allResults)
+        {
+            var list = new List<Dictionary<string, string>>();
+
+            int count = allResults.FirstOrDefault()?.Result?.Count ?? 0;
+
+            for (int i = 0; i < count; i++)
+            {
+                int j = 0;
+                var row = new Dictionary<string, string>();
+
+                foreach (ResultSet el in allResults)
+                {
+                    Data dataRow = el.Result.ElementAt(i);
+
+                    if (row.ContainsKey($"{el.Name} - Index"))
+                    {
+                        row[$"{el.Name} - Index"] = dataRow.Index.ToString(CultureInfo.InvariantCulture);
+                    }
+                    else
+                    {
+                        row.Add($"{el.Name} - Index", dataRow.Index.ToString(CultureInfo.InvariantCulture));
+                    }
+
+                    if (row.ContainsKey($"{el.Name} - Time"))
+                    {
+                        row[$"{el.Name} - Time"] = dataRow.Time.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture);
+                    }
+                    else
+                    {
+                        row.Add($"{el.Name} - Time", dataRow.Time.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture));
+                    }
+
+                    if (row.ContainsKey($"{el.Name} - Value"))
+                    {
+                        row[$"{el.Name} - Value"] = Math.Round(dataRow.DataValue, 2).ToString("N2", CultureInfo.InvariantCulture);
+                    }
+                    else
+                    {
+                        row.Add($"{el.Name} - Value", Math.Round(dataRow.DataValue, 2).ToString("N2", CultureInfo.InvariantCulture));
+                    }
+
+                    j++;
+                }
+
+                list.Add(row);
+            }
+
+            return list;
         }
     }
 }

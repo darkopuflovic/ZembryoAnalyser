@@ -616,66 +616,20 @@ namespace ZembryoAnalyser
 
         public void ExportCSV()
         {
-            var list = new List<Dictionary<string, string>>();
-
-            int count = allResults.FirstOrDefault()?.Result?.Count ?? 0;
-
-            for (int i = 0; i < count; i++)
-            {
-                int j = 0;
-                var row = new Dictionary<string, string>();
-
-                foreach (ResultSet el in allResults)
-                {
-                    Data dataRow = el.Result.ElementAt(i);
-
-                    if (row.ContainsKey($"{el.Name} - Index"))
-                    {
-                        row[$"{el.Name} - Index"] = dataRow.Index.ToString(CultureInfo.InvariantCulture);
-                    }
-                    else
-                    {
-                        row.Add($"{el.Name} - Index", dataRow.Index.ToString(CultureInfo.InvariantCulture));
-                    }
-
-                    if (row.ContainsKey($"{el.Name} - Time"))
-                    {
-                        row[$"{el.Name} - Time"] = dataRow.Time.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture);
-                    }
-                    else
-                    {
-                        row.Add($"{el.Name} - Time", dataRow.Time.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture));
-                    }
-
-                    if (row.ContainsKey($"{el.Name} - Value"))
-                    {
-                        row[$"{el.Name} - Value"] = Math.Round(dataRow.DataValue, 2).ToString("N2", CultureInfo.InvariantCulture);
-                    }
-                    else
-                    {
-                        row.Add($"{el.Name} - Value", Math.Round(dataRow.DataValue, 2).ToString("N2", CultureInfo.InvariantCulture));
-                    }
-
-                    j++;
-                }
-
-                list.Add(row);
-            }
-
             var sfd = new SaveFileDialog
             {
                 Filter = "Csv file|*.csv"
             };
 
-            if (sfd.ShowDialog().HasValue)
+            if (sfd.ShowDialog() == true)
             {
                 try
                 {
-                    CsvExport.ExportCsv(sfd.FileName, list);
+                    CsvExport.ExportCsv(sfd.FileName, allResults);
                 }
-                catch
+                catch (Exception e)
                 {
-                    ErrorMessage("Unable to save Excel file.");
+                    ErrorMessage($"Unable to save CSV file. (Message: {e.Message})");
                 }
             }
         }
@@ -687,15 +641,15 @@ namespace ZembryoAnalyser
                 Filter = "Excel file|*.xlsx"
             };
 
-            if (sfd.ShowDialog().HasValue)
+            if (sfd.ShowDialog() == true)
             {
                 try
                 {
                     ExcelExport.ExportXLSX(sfd.FileName, allResults);
                 }
-                catch
+                catch (Exception e)
                 {
-                    ErrorMessage("Unable to save Excel file.");
+                    ErrorMessage($"Unable to save Excel file. (Message: {e.Message})");
                 }
             }
         }
@@ -714,7 +668,7 @@ namespace ZembryoAnalyser
                 Filter = "PDF file|*.pdf"
             };
 
-            if (sfd.ShowDialog().HasValue)
+            if (sfd.ShowDialog() == true)
             {
                 try
                 {
@@ -731,7 +685,7 @@ namespace ZembryoAnalyser
                 }
                 catch (Exception e)
                 {
-                    ErrorMessage("Unable to save PDF file. " + e.Message);
+                    ErrorMessage($"Unable to save PDF file. (Message: {e.Message})");
                 }
             }
 
@@ -752,7 +706,7 @@ namespace ZembryoAnalyser
                 Filter = "Png image|*.png"
             };
 
-            if (sfd.ShowDialog().HasValue)
+            if (sfd.ShowDialog() == true)
             {
                 try
                 {
@@ -761,12 +715,13 @@ namespace ZembryoAnalyser
                         Width = (int)plot.ActualWidth * 2,
                         Height = (int)plot.ActualHeight * 2
                     };
+
                     using FileStream file = File.OpenWrite(sfd.FileName);
                     exporter.Export(plot.ActualModel, file);
                 }
-                catch
+                catch (Exception e)
                 {
-                    ErrorMessage("Unable to save image.");
+                    ErrorMessage($"Unable to save image. (Message: {e.Message})");
                 }
             }
 
@@ -787,7 +742,7 @@ namespace ZembryoAnalyser
                 Filter = "Jpeg image|*.jpg;*.jpeg"
             };
 
-            if (sfd.ShowDialog().HasValue)
+            if (sfd.ShowDialog() == true)
             {
                 try
                 {
@@ -796,6 +751,7 @@ namespace ZembryoAnalyser
                         Width = (int)plot.ActualWidth * 2,
                         Height = (int)plot.ActualHeight * 2
                     };
+
                     BitmapSource bitmap = exporter.ExportToBitmap(plot.ActualModel);
 
                     var encoder = new JpegBitmapEncoder();
@@ -805,9 +761,9 @@ namespace ZembryoAnalyser
                     using FileStream file = File.OpenWrite(sfd.FileName);
                     encoder.Save(file);
                 }
-                catch
+                catch (Exception e)
                 {
-                    ErrorMessage("Unable to save image.");
+                    ErrorMessage($"Unable to save image. (Message: {e.Message})");
                 }
             }
 
@@ -828,7 +784,7 @@ namespace ZembryoAnalyser
                 Filter = "Svg image|*.svg"
             };
 
-            if (sfd.ShowDialog().HasValue)
+            if (sfd.ShowDialog() == true)
             {
                 try
                 {
@@ -837,12 +793,13 @@ namespace ZembryoAnalyser
                         Width = plot.ActualWidth * 2,
                         Height = plot.ActualHeight * 2
                     };
+
                     using FileStream file = File.OpenWrite(sfd.FileName);
                     exporter.Export(plot.ActualModel, file);
                 }
-                catch
+                catch (Exception e)
                 {
-                    ErrorMessage("Unable to save image.");
+                    ErrorMessage($"Unable to save image. (Message: {e.Message})");
                 }
             }
 
@@ -856,7 +813,7 @@ namespace ZembryoAnalyser
                 Filter = "Json file|*.json"
             };
 
-            if (sfd.ShowDialog().HasValue)
+            if (sfd.ShowDialog() == true)
             {
                 var options = new JsonSerializerOptions
                 {
@@ -881,9 +838,9 @@ namespace ZembryoAnalyser
                     string json = JsonSerializer.Serialize(result, options);
                     File.WriteAllText(sfd.FileName, json);
                 }
-                catch
+                catch (Exception e)
                 {
-                    ErrorMessage("Unable to save json file.");
+                    ErrorMessage($"Unable to save json file. (Message: {e.Message})");
                 }
             }
         }
