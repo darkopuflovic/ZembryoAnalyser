@@ -233,6 +233,33 @@ namespace ZembryoAnalyser
             CanRun(true);
         }
 
+        public void CloseVideo()
+        {
+            InvokeAction(() =>
+            {
+                filePathText.Text = "";
+                timeText.Text = "";
+                slika.Source = null;
+                RemoveRectangles();
+                slika.Width = 0;
+                slika.Height = 0;
+                drawingControl.Width = 0;
+                drawingControl.Height = 0;
+                measureControl.Width = 0;
+                measureControl.Height = 0;
+                videoCloseButton.IsEnabled = false;
+                calculateDataButton.IsEnabled = false;
+                videoContent.Visibility = Visibility.Collapsed;
+                dataContent.Visibility = Visibility.Collapsed;
+                bpmContent.Visibility = Visibility.Collapsed;
+                plotContent.Visibility = Visibility.Collapsed;
+                videoSlider.Visibility = Visibility.Collapsed;
+                ShowDrawingButtons = false;
+                ShowDataButtons = false;
+                VideoLoaded = false;
+            });
+        }
+
         private void VideoSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             int frame = (int)videoSlider.Value;

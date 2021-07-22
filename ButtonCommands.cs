@@ -38,6 +38,7 @@ namespace ZembryoAnalyser
 
                     using var action = Task.Run(new Action(() =>
                     {
+                        main.CloseVideo();
                         main.SetWaitingState("Opening document...");
                         main.LoadVideo(ofd.FileName);
                         main.ReleaseWaitingState();
@@ -67,27 +68,7 @@ namespace ZembryoAnalyser
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
                 main.CanRun(false);
-
-                main.filePathText.Text = "";
-                main.timeText.Text = "";
-                main.slika.Source = null;
-                main.RemoveRectangles();
-                main.slika.Width = 0;
-                main.slika.Height = 0;
-                main.drawingControl.Width = 0;
-                main.drawingControl.Height = 0;
-                main.measureControl.Width = 0;
-                main.measureControl.Height = 0;
-                main.videoCloseButton.IsEnabled = false;
-                main.calculateDataButton.IsEnabled = false;
-                main.videoContent.Visibility = Visibility.Collapsed;
-                main.dataContent.Visibility = Visibility.Collapsed;
-                main.bpmContent.Visibility = Visibility.Collapsed;
-                main.plotContent.Visibility = Visibility.Collapsed;
-                main.videoSlider.Visibility = Visibility.Collapsed;
-                main.ShowDrawingButtons = false;
-                main.ShowDataButtons = false;
-                main.VideoLoaded = false;
+                main.CloseVideo();
                 main.CanRun(true);
             }
         }
