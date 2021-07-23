@@ -89,6 +89,7 @@ namespace ZembryoAnalyser
             canStartNewCommand = cR;
             InvokeAction(() =>
             {
+                videoSlider.IsEnabled = cR;
                 videoOpenButton.IsEnabled = cR;
                 videoCloseButton.IsEnabled = cR && VideoLoaded;
                 calculateDataButton.IsEnabled = cR && VideoLoaded;
@@ -197,10 +198,7 @@ namespace ZembryoAnalyser
                 drawingControl.editCanvas.Children.Clear();
                 drawingControl.Geometries.Clear();
                 detect = regionDetection.IsChecked == true;
-            });
 
-            InvokeAction(() =>
-            {
                 SetNumberOfFrames(VideoLibrary.GetFrameCount(videoFileName));
                 dataContent.Visibility = Visibility.Collapsed;
                 bpmContent.Visibility = Visibility.Collapsed;
