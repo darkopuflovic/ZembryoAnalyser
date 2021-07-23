@@ -21,4 +21,4 @@ For PDF generation [PDFsharp](https://github.com/empira/PDFsharp/) library is us
 
 # More information
 
-More information about application usage can be found on [Wiki page](https://github.com/darkopuflovic/ZembryoAnalyser/wiki).
+More information about application usage can be found on the [Wiki page](https://github.com/darkopuflovic/ZembryoAnalyser/wiki).
