@@ -25,6 +25,7 @@ namespace ZembryoAnalyser
         private Rectangle rectangle;
         private Ellipse ellipse;
         private Polygon polygon;
+        private Polyline angle;
 
         public MeasureControl()
         {
@@ -35,6 +36,7 @@ namespace ZembryoAnalyser
             rectangle = null;
             ellipse = null;
             polygon = null;
+            angle = null;
         }
 
         public void SetStatusBar(StatusBarContent content) =>
@@ -154,6 +156,41 @@ namespace ZembryoAnalyser
                         status.SetText($"Perimeter = {Math.Round(len, 2)} px, Area = {Math.Round(PolygonArea(polygon.Points.ToList()), 2)} px²");
                     }
                     break;
+                case MeasureType.Angle:
+                    if (angle == null)
+                    {
+                        _ = canvas.CaptureMouse();
+                        angle = new Polyline
+                        {
+                            Stroke = Brushes.Crimson,
+                            StrokeThickness = 3
+                        };
+
+                        angle.Points.Add(lastPoint);
+
+                        _ = canvas.Children.Add(angle);
+                    }
+                    else
+                    {
+                        if (angle.Points.Count < 3)
+                        {
+                            angle.Points.Add(lastPoint);
+                        }
+                        else
+                        {
+                            angle.Points.Clear();
+                            angle = null;
+
+                            status.SetText("Ready");
+                            canvas.ReleaseMouseCapture();
+                        }
+                        
+                        if (angle?.Points?.Count == 3)
+                        {
+                            status.SetText($"Angle: {Math.Round(Math.Abs(CalculateAngle(angle.Points.ToArray())), 2)}°");
+                        }
+                    }
+                    break;
                 case MeasureType.None:
                 default:
                     break;
@@ -193,12 +230,14 @@ namespace ZembryoAnalyser
                     rectangle = null;
                     ellipse = null;
                     polygon = null;
+                    angle = null;
 
                     status.SetText("Ready");
                     canvas.ReleaseMouseCapture();
                     break;
                 case MeasureType.Polyline:
                 case MeasureType.Polygon:
+                case MeasureType.Angle:
                     if (e.ChangedButton == MouseButton.Right)
                     {
                         lastPoint = new Point();
@@ -210,6 +249,7 @@ namespace ZembryoAnalyser
                         rectangle = null;
                         ellipse = null;
                         polygon = null;
+                        angle = null;
 
                         status.SetText("Ready");
                         canvas.ReleaseMouseCapture();
@@ -262,6 +302,7 @@ namespace ZembryoAnalyser
                         status.SetText($"Perimeter = {Math.Round(2 * Math.PI * Math.Sqrt(((rg.RadiusX * rg.RadiusX) + (rg.RadiusY * rg.RadiusY)) / (2 * 1.0)), 2)} px, a = {Math.Round(rg.RadiusX, 2)}, b = {Math.Round(rg.RadiusY, 2)}, Area = {Math.Round(rg.GetArea(), 2)} px²");
                     }
                     break;
+                case MeasureType.Angle:
                 case MeasureType.Polyline:
                 case MeasureType.Polygon:
                 case MeasureType.None:
@@ -275,5 +316,20 @@ namespace ZembryoAnalyser
 
         private static string Length(Line line) =>
             Math.Round(Math.Sqrt(Math.Pow(line.Y2 - line.Y1, 2) + Math.Pow(line.X2 - line.X1, 2)), 2).ToString("N2", CultureInfo.InvariantCulture);
+
+        private static double CalculateAngle(Point[] points)
+        {
+            if (points.Length == 3)
+            {
+                var v1 = new Vector(points[0].X - points[1].X, points[0].Y - points[1].Y);
+                var v2 = new Vector(points[2].X - points[1].X, points[2].Y - points[1].Y);
+
+                return Vector.AngleBetween(v1, v2);
+            }
+            else
+            {
+                return 0;
+            }
+        }
     }
 }

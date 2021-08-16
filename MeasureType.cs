@@ -7,6 +7,7 @@
         Rectangle,
         Ellipse,
         Polygon,
+        Angle,
         None
     }
 }

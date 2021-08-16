@@ -226,6 +226,11 @@
                                 <VisualBrush Visual="{StaticResource PolygonMeasureButton}" />
                             </ui:RibbonButton.BrushSource>
                         </ui:RibbonButton>
+                        <ui:RibbonButton Name="angleMeasure" Width="70" Content="Angle" IsEnabled="False" Command="{StaticResource AngleMeasureCommand}">
+                            <ui:RibbonButton.BrushSource>
+                                <VisualBrush Visual="{StaticResource AngleMeasureButton}" />
+                            </ui:RibbonButton.BrushSource>
+                        </ui:RibbonButton>
                     </ui:RibbonGroup>
                 </ui:RibbonPage>
             </ui:RibbonTab>

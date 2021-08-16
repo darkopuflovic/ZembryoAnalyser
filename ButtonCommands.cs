@@ -466,6 +466,31 @@ namespace ZembryoAnalyser
         }
     }
 
+    public sealed class AngleMeasureCommand : ICommand
+    {
+        public bool CanExecute(object parameter) => true;
+
+        public event EventHandler CanExecuteChanged;
+
+        public void OnCanExecuteChanged() =>
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+
+        public void Execute(object parameter)
+        {
+            var main = (MainWindow)Application.Current.MainWindow;
+
+            if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
+            {
+                main.CanRun(false);
+                main.measureControl.SetStatusBar((StatusBarContent)main.StatusBarItemsSource);
+                main.measureControl.MeasureType = MeasureType.Angle;
+                main.drawingControl.IsHitTestVisible = false;
+                main.measureControl.IsHitTestVisible = true;
+                main.CanRun(true);
+            }
+        }
+    }
+
     public sealed class ExportCSVCommand : ICommand
     {
         public bool CanExecute(object parameter) => true;

@@ -27,6 +27,7 @@
         <local:RectangleMeasureCommand x:Key="RectangleMeasureCommand" />
         <local:EllipseMeasureCommand x:Key="EllipseMeasureCommand" />
         <local:PolygonMeasureCommand x:Key="PolygonMeasureCommand" />
+        <local:AngleMeasureCommand x:Key="AngleMeasureCommand" />
 
         <local:ExportCSVCommand x:Key="ExportCSVCommand" />
         <local:ExportXLSXCommand x:Key="ExportXLSXCommand" />

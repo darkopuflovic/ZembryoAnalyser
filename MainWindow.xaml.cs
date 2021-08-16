@@ -107,6 +107,7 @@ namespace ZembryoAnalyser
                 rectangleMeasure.IsEnabled = cR && ShowDrawingButtons;
                 ellipseMeasure.IsEnabled = cR && ShowDrawingButtons;
                 polygonMeasure.IsEnabled = cR && ShowDrawingButtons;
+                angleMeasure.IsEnabled = cR && ShowDrawingButtons;
                 exportCSVButton.IsEnabled = cR && ShowDataButtons;
                 exportJPGButton.IsEnabled = cR && ShowDataButtons;
                 exportPNGButton.IsEnabled = cR && ShowDataButtons;
