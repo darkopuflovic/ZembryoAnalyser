@@ -9,22 +9,32 @@ namespace ZembryoAnalyser
 {
     public static class Extensions
     {
-        public static bool ToBoolean(this object value, bool defaultValue = false) =>
-            value is bool val ? val : defaultValue;
+        public static bool ToBoolean(this object value, bool defaultValue = false)
+        {
+            return value is bool val ? val : defaultValue;
+        }
 
-        public static Brush ToBrush(this object value, byte[] defaultBrush = null) =>
-            value is byte[] val
-                ? new SolidColorBrush(Color.FromArgb(val[0], val[1], val[2], val[3]))
-                : new SolidColorBrush(Color.FromArgb(defaultBrush[0], defaultBrush[1], defaultBrush[2], defaultBrush[3]));
+        public static Brush ToBrush(this object value, byte[] defaultBrush = null)
+        {
+            return value is byte[] val
+? new SolidColorBrush(Color.FromArgb(val[0], val[1], val[2], val[3]))
+: new SolidColorBrush(Color.FromArgb(defaultBrush[0], defaultBrush[1], defaultBrush[2], defaultBrush[3]));
+        }
 
-        public static AccentColorOptions ToAccentOptions(this object value, AccentColorOptions defaultOption) =>
-            value is int val ? (AccentColorOptions)val : defaultOption;
+        public static AccentColorOptions ToAccentOptions(this object value, AccentColorOptions defaultOption)
+        {
+            return value is int val ? (AccentColorOptions)val : defaultOption;
+        }
 
-        public static BackgroundColorOptions ToBackgroundOptions(this object value, BackgroundColorOptions defaultOption) =>
-            value is int val ? (BackgroundColorOptions)val : defaultOption;
+        public static BackgroundColorOptions ToBackgroundOptions(this object value, BackgroundColorOptions defaultOption)
+        {
+            return value is int val ? (BackgroundColorOptions)val : defaultOption;
+        }
 
-        public static int Area(this Rectangle r) =>
-            r.Width * r.Height;
+        public static int Area(this Rectangle r)
+        {
+            return r.Width * r.Height;
+        }
 
         public static bool IsPointInEllipse(this Rectangle rectangle, int x, int y)
         {
@@ -60,16 +70,24 @@ namespace ZembryoAnalyser
             return inside;
         }
 
-        public static OxyColor ToOxyColor(this SolidColorBrush brush) =>
-            OxyColor.FromArgb(brush.Color.A, brush.Color.R, brush.Color.G, brush.Color.B);
+        public static OxyColor ToOxyColor(this SolidColorBrush brush)
+        {
+            return OxyColor.FromArgb(brush.Color.A, brush.Color.R, brush.Color.G, brush.Color.B);
+        }
 
-        public static SolidColorBrush ToAlphaSolidColorBrush(this Color color, int alpha) =>
-            new(Color.FromArgb((byte)alpha, color.R, color.G, color.B));
+        public static SolidColorBrush ToAlphaSolidColorBrush(this Color color, int alpha)
+        {
+            return new(Color.FromArgb((byte)alpha, color.R, color.G, color.B));
+        }
 
-        public static Color GetColorFromBrush(this Brush brush) =>
-            brush is SolidColorBrush scb ? scb.Color : Colors.Transparent;
+        public static Color GetColorFromBrush(this Brush brush)
+        {
+            return brush is SolidColorBrush scb ? scb.Color : Colors.Transparent;
+        }
 
-        public static string GetColorName(this string tag) =>
-            Regex.Match(tag, ".+ \\((.+)\\)").Groups[1].Value;
+        public static string GetColorName(this string tag)
+        {
+            return Regex.Match(tag, ".+ \\((.+)\\)").Groups[1].Value;
+        }
     }
 }

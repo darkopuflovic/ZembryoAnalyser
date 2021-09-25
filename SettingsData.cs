@@ -9,6 +9,9 @@ namespace ZembryoAnalyser
         [DataMember]
         public Dictionary<string, object> Dictionary { get; set; }
 
-        public SettingsData() => Dictionary = new Dictionary<string, object>();
+        public SettingsData()
+        {
+            Dictionary = new Dictionary<string, object>();
+        }
     }
 }

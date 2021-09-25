@@ -50,8 +50,10 @@ namespace ZembryoAnalyser
             slidersChangingAutomatically = sliders;
         }
 
-        public Brush GetSelectedBrush() =>
-            selectedColor.Background;
+        public Brush GetSelectedBrush()
+        {
+            return selectedColor.Background;
+        }
 
         private void Rectangle_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -104,7 +106,7 @@ namespace ZembryoAnalyser
         {
             if (alphaSlider != null && redSlider != null && greenSlider != null && blueSlider != null && selectedColor != null && selectedColorText != null && selectedColorTextRGB != null)
             {
-                var col = Color.FromArgb((byte)alphaSlider.Value, (byte)redSlider.Value, (byte)greenSlider.Value, (byte)blueSlider.Value);
+                Color col = Color.FromArgb((byte)alphaSlider.Value, (byte)redSlider.Value, (byte)greenSlider.Value, (byte)blueSlider.Value);
                 selectedColor.Background = new SolidColorBrush(col);
                 selectedColorText.Text = col.ToString(CultureInfo.InvariantCulture);
                 selectedColorText.Foreground = new SolidColorBrush(ContrastColor(col));

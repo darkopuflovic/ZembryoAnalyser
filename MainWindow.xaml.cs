@@ -23,6 +23,7 @@ using System.Windows.Media.Imaging;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.ComponentModel;
+using System.Windows.Interop;
 
 namespace ZembryoAnalyser
 {
@@ -71,7 +72,7 @@ namespace ZembryoAnalyser
 
             _ = CommandBindings.Add(new CommandBinding(ApplicationCommands.Help, (sender, e) =>
             {
-                var r = new About
+                About r = new()
                 {
                     Owner = this
                 };
@@ -130,23 +131,27 @@ namespace ZembryoAnalyser
             }
         }
 
-        public void SetWaitingState(string info) =>
+        public void SetWaitingState(string info)
+        {
             InvokeAction(new Action(() =>
             {
                 GetStatusBar().SetColor(Media.Color.FromArgb(255, 200, 100, 0));
                 ((StatusBarContent)StatusBarItemsSource).SetText(info);
             }));
+        }
 
-        public void ReleaseWaitingState() =>
+        public void ReleaseWaitingState()
+        {
             InvokeAction(new Action(() =>
             {
                 ResetStatusBarBrush();
                 ((StatusBarContent)StatusBarItemsSource).SetText("Ready");
             }));
+        }
 
         public void ShowZoom(bool show)
         {
-            var status = (StatusBarContent)StatusBarItemsSource;
+            StatusBarContent status = (StatusBarContent)StatusBarItemsSource;
             status.SetSliderVisibility(show);
 
             if (show)
@@ -157,7 +162,7 @@ namespace ZembryoAnalyser
 
         public void ShowProgress(bool show)
         {
-            var status = (StatusBarContent)StatusBarItemsSource;
+            StatusBarContent status = (StatusBarContent)StatusBarItemsSource;
             status.SetProgressVisibility(show);
 
             if (show)
@@ -167,11 +172,15 @@ namespace ZembryoAnalyser
             }
         }
 
-        public void SetProgressValue(double value) =>
+        public void SetProgressValue(double value)
+        {
             ((StatusBarContent)StatusBarItemsSource).SetProgress(value);
+        }
 
-        public void SetNumberOfFrames(int frames) =>
+        public void SetNumberOfFrames(int frames)
+        {
             numberOfFrames = frames;
+        }
 
         public void SetNumberOfFrames(int frames, int realFrames)
         {
@@ -265,7 +274,7 @@ namespace ZembryoAnalyser
             int maxFrames = (int)videoSlider.Maximum;
 
             double percent = (double)frame / maxFrames;
-            var time = TimeSpan.FromMilliseconds(videoDuration.TotalMilliseconds * percent);
+            TimeSpan time = TimeSpan.FromMilliseconds(videoDuration.TotalMilliseconds * percent);
 
             timeText.Text = $"{time.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture)}/{videoDuration.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture)}";
 
@@ -277,8 +286,10 @@ namespace ZembryoAnalyser
             }
         }
 
-        public static int CompareColors(int r1, int g1, int b1, int r2, int g2, int b2) =>
-            r1 + g1 + b1 - r2 - g2 - b2;
+        public static int CompareColors(int r1, int g1, int b1, int r2, int g2, int b2)
+        {
+            return r1 + g1 + b1 - r2 - g2 - b2;
+        }
 
         public void GetResults()
         {
@@ -354,13 +365,13 @@ namespace ZembryoAnalyser
 
         private void CalculateBPM(List<ResultSet> results)
         {
-            var realBPMs = new List<KeyValuePair<string, int>>();
+            List<KeyValuePair<string, int>> realBPMs = new();
 
             foreach (ResultSet setValues in results)
             {
                 if (setValues != null && setValues.Result != null && setValues.Result.Count > 0)
                 {
-                    var values = setValues.Result.Select(p => p.DataValue).ToList();
+                    List<double> values = setValues.Result.Select(p => p.DataValue).ToList();
 
                     double avg = CalculateAverage(values);
                     double last = values.FirstOrDefault();
@@ -399,7 +410,7 @@ namespace ZembryoAnalyser
                 }
             }
 
-            var sb = new StringBuilder();
+            StringBuilder sb = new();
 
             foreach (KeyValuePair<string, int> rbpm in realBPMs)
             {
@@ -414,7 +425,7 @@ namespace ZembryoAnalyser
             int listCount = list.Count;
             int count = listCount / (int)videoDuration.TotalSeconds;
 
-            var tempList = new List<double>();
+            List<double> tempList = new();
 
             for (int i = 0; i < listCount - count; i++)
             {
@@ -450,12 +461,12 @@ namespace ZembryoAnalyser
 
             for (int i = 0; i < elements * 3; i++)
             {
-                var dgc = new DataGridTextColumn { Header = i % 3 == 0 ? "Index" : ((i % 3 == 1) ? "Time" : "Data value") };
+                DataGridTextColumn dgc = new() { Header = i % 3 == 0 ? "Index" : ((i % 3 == 1) ? "Time" : "Data value") };
                 dataGrid.Columns.Add(dgc);
                 dgc.Binding = new Binding($"Data{i}");
 
-                var columnDefinition = new ColumnDefinition();
-                var binding = new Binding("ActualWidth")
+                ColumnDefinition columnDefinition = new();
+                Binding binding = new("ActualWidth")
                 {
                     Source = dgc
                 };
@@ -465,7 +476,7 @@ namespace ZembryoAnalyser
 
             for (int i = 0; i < elements; i++)
             {
-                var border = new Border
+                Border border = new()
                 {
                     Margin = new Thickness(2, 0, 0, 0),
                     BorderBrush = (SolidColorBrush)FindResource("StandardBorderScrollBrush"),
@@ -477,7 +488,7 @@ namespace ZembryoAnalyser
                 border.SetValue(Grid.ColumnSpanProperty, 3);
                 _ = titleGrid.Children.Add(border);
 
-                var textBlock = new TextBlock
+                TextBlock textBlock = new()
                 {
                     Padding = new Thickness(5),
                     TextAlignment = TextAlignment.Center,
@@ -521,9 +532,9 @@ namespace ZembryoAnalyser
             backColor = Background is SolidColorBrush backBrush ? backBrush.Color : Colors.White;
             foreColor = Foreground is SolidColorBrush foreBrush ? foreBrush.Color : Colors.Black;
 
-            var foreOxy = OxyColor.FromArgb(96, foreColor.R, foreColor.G, foreColor.B);
+            OxyColor foreOxy = OxyColor.FromArgb(96, foreColor.R, foreColor.G, foreColor.B);
 
-            var model = new PlotModel
+            PlotModel model = new()
             {
                 Title = "Color intensity data",
                 PlotType = PlotType.XY,
@@ -533,7 +544,7 @@ namespace ZembryoAnalyser
                 IsLegendVisible = true
             };
 
-            var legend = new Legend
+            Legend legend = new()
             {
                 LegendBackground = OxyColor.FromArgb(64, 128, 128, 128),
                 LegendBorder = OxyColor.FromArgb(255, 0, 0, 0),
@@ -546,10 +557,10 @@ namespace ZembryoAnalyser
 
             foreach (ResultSet result in data)
             {
-                var color = result.Color.ToOxyColor();
-                var markerColor = OxyColor.FromArgb(128, color.R, color.G, color.B);
+                OxyColor color = result.Color.ToOxyColor();
+                OxyColor markerColor = OxyColor.FromArgb(128, color.R, color.G, color.B);
 
-                var series = new OxyPlot.Series.LineSeries
+                OxyPlot.Series.LineSeries series = new()
                 {
                     Title = $"Color intensity ({result.Name})",
                     StrokeThickness = 1,
@@ -618,7 +629,7 @@ namespace ZembryoAnalyser
             Media.Color backColor = Background is SolidColorBrush backBrush ? backBrush.Color : Colors.White;
             Media.Color foreColor = Foreground is SolidColorBrush foreBrush ? foreBrush.Color : Colors.Black;
 
-            var foreOxy = OxyColor.FromArgb(96, foreColor.R, foreColor.G, foreColor.B);
+            OxyColor foreOxy = OxyColor.FromArgb(96, foreColor.R, foreColor.G, foreColor.B);
 
             plot.Model.Background = OxyColor.FromRgb(backColor.R, backColor.G, backColor.B);
             plot.Model.TextColor = OxyColor.FromRgb(foreColor.R, foreColor.G, foreColor.B);
@@ -634,15 +645,19 @@ namespace ZembryoAnalyser
             PlotRefresh();
         }
 
-        public void PlotRefresh() =>
+        public void PlotRefresh()
+        {
             plot.InvalidatePlot();
+        }
 
-        public void RemoveRectangles() =>
+        public void RemoveRectangles()
+        {
             allRectangles.Clear();
+        }
 
         public void ExportCSV()
         {
-            var sfd = new SaveFileDialog
+            SaveFileDialog sfd = new()
             {
                 Filter = "Csv file|*.csv"
             };
@@ -662,7 +677,7 @@ namespace ZembryoAnalyser
 
         public void ExportXLSX()
         {
-            var sfd = new SaveFileDialog
+            SaveFileDialog sfd = new()
             {
                 Filter = "Excel file|*.xlsx"
             };
@@ -689,7 +704,7 @@ namespace ZembryoAnalyser
                 plotContent.Visibility = Visibility.Hidden;
             }
 
-            var sfd = new SaveFileDialog
+            SaveFileDialog sfd = new()
             {
                 Filter = "PDF file|*.pdf"
             };
@@ -698,13 +713,13 @@ namespace ZembryoAnalyser
             {
                 try
                 {
-                    var exporter = new OxyPlot.Wpf.PngExporter
+                    OxyPlot.Wpf.PngExporter exporter = new()
                     {
                         Width = (int)plot.ActualWidth * 2,
                         Height = (int)plot.ActualHeight * 2
                     };
 
-                    using var image = new MemoryStream();
+                    using MemoryStream image = new();
                     exporter.Export(plot.ActualModel, image);
 
                     PDFExporter.ExportPDF(sfd.FileName, allResults, image);
@@ -727,7 +742,7 @@ namespace ZembryoAnalyser
                 plotContent.Visibility = Visibility.Hidden;
             }
 
-            var sfd = new SaveFileDialog
+            SaveFileDialog sfd = new()
             {
                 Filter = "Png image|*.png"
             };
@@ -736,7 +751,7 @@ namespace ZembryoAnalyser
             {
                 try
                 {
-                    var exporter = new OxyPlot.Wpf.PngExporter
+                    OxyPlot.Wpf.PngExporter exporter = new()
                     {
                         Width = (int)plot.ActualWidth * 2,
                         Height = (int)plot.ActualHeight * 2
@@ -763,7 +778,7 @@ namespace ZembryoAnalyser
                 plotContent.Visibility = Visibility.Hidden;
             }
 
-            var sfd = new SaveFileDialog
+            SaveFileDialog sfd = new()
             {
                 Filter = "Jpeg image|*.jpg;*.jpeg"
             };
@@ -772,7 +787,7 @@ namespace ZembryoAnalyser
             {
                 try
                 {
-                    var exporter = new OxyPlot.Wpf.PngExporter
+                    OxyPlot.Wpf.PngExporter exporter = new()
                     {
                         Width = (int)plot.ActualWidth * 2,
                         Height = (int)plot.ActualHeight * 2
@@ -780,8 +795,8 @@ namespace ZembryoAnalyser
 
                     BitmapSource bitmap = exporter.ExportToBitmap(plot.ActualModel);
 
-                    var encoder = new JpegBitmapEncoder();
-                    var outputFrame = BitmapFrame.Create(bitmap);
+                    JpegBitmapEncoder encoder = new();
+                    BitmapFrame outputFrame = BitmapFrame.Create(bitmap);
                     encoder.Frames.Add(outputFrame);
 
                     using FileStream file = File.OpenWrite(sfd.FileName);
@@ -805,7 +820,7 @@ namespace ZembryoAnalyser
                 plotContent.Visibility = Visibility.Hidden;
             }
 
-            var sfd = new SaveFileDialog
+            SaveFileDialog sfd = new()
             {
                 Filter = "Svg image|*.svg"
             };
@@ -814,7 +829,7 @@ namespace ZembryoAnalyser
             {
                 try
                 {
-                    var exporter = new OxyPlot.Wpf.SvgExporter
+                    OxyPlot.Wpf.SvgExporter exporter = new()
                     {
                         Width = plot.ActualWidth * 2,
                         Height = plot.ActualHeight * 2
@@ -834,14 +849,14 @@ namespace ZembryoAnalyser
 
         public void ExportJSON()
         {
-            var sfd = new SaveFileDialog
+            SaveFileDialog sfd = new()
             {
                 Filter = "Json file|*.json"
             };
 
             if (sfd.ShowDialog() == true)
             {
-                var options = new JsonSerializerOptions
+                JsonSerializerOptions options = new()
                 {
                     WriteIndented = true,
                     PropertyNamingPolicy = null
@@ -849,7 +864,7 @@ namespace ZembryoAnalyser
 
                 try
                 {
-                    var result = allResults.Select(p => new JsonResultSet
+                    List<JsonResultSet> result = allResults.Select(p => new JsonResultSet
                     {
                         Name = p.Name,
                         Color = p.Color.Color.ToString(CultureInfo.InvariantCulture),
@@ -871,13 +886,21 @@ namespace ZembryoAnalyser
             }
         }
 
-        private void ErrorMessage(string message) =>
+        private void ErrorMessage(string message)
+        {
             _ = Task.Run(async () =>
             {
                 SetWaitingState(message);
                 await Task.Delay(2000);
                 ReleaseWaitingState();
             });
+        }
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+            SetWindowStyles(PresentationSource.FromVisual(this) as HwndSource);
+        }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -891,8 +914,10 @@ namespace ZembryoAnalyser
             canStartNewCommand = true;
         }
 
-        private void Window_Closing(object sender, CancelEventArgs e) =>
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
             WindowClosing = true;
+        }
 
         private void SystemEvents_UserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
         {
@@ -922,11 +947,17 @@ namespace ZembryoAnalyser
             rw.Deactivated -= Deactivated_Event;
         }
 
-        private void Deactivated_Event(object sender, EventArgs e) =>
-            (sender as RibbonWindow).SetInactiveWindowBorderBrush();
+        private void Deactivated_Event(object sender, EventArgs e)
+        {
+            SetApplicationMenuBackground("InactiveBrush");
+            SetBorderBrush("InactiveBrush");
+        }
 
-        private void Activated_Event(object sender, EventArgs e) =>
-            (sender as RibbonWindow).SetAccentBorderBrush();
+        private void Activated_Event(object sender, EventArgs e)
+        {
+            SetApplicationMenuBackground("AccentBrush");
+            SetBorderBrush("AccentBrush");
+        }
 
         private void EnableInactive_Checked(object sender, RoutedEventArgs e)
         {
@@ -1138,7 +1169,7 @@ namespace ZembryoAnalyser
 
         private void PickColor_Click(object sender, RoutedEventArgs e)
         {
-            var cd = new ColorDialog(this)
+            ColorDialog cd = new(this)
             {
                 Owner = this,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -1329,7 +1360,9 @@ namespace ZembryoAnalyser
             }
         }
 
-        private void Ribbon_SelectionChanged(object sender, SelectionChangedEventArgs e) =>
+        private void Ribbon_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
             drawingControl.GeometryType = GeometryType.None;
+        }
     }
 }

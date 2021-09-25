@@ -8,16 +8,21 @@ namespace ZembryoAnalyser
 {
     public sealed class OpenDocumentCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public async void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoOpenButton.IsEnabled && main.canStartNewCommand)
             {
@@ -26,7 +31,7 @@ namespace ZembryoAnalyser
                 main.filePathText.Text = "";
                 main.timeText.Text = "";
 
-                var ofd = new OpenFileDialog
+                OpenFileDialog ofd = new()
                 {
                     Filter = "Video files | *.dat; *.wmv; *.3g2; *.3gp; *.3gp2; *.3gpp; *.amv; *.asf;  *.avi; *.bin; *.cue; *.divx; *.dv; *.flv; *.gxf; *.iso; *.m1v; *.m2v; *.m2t; *.m2ts; *.m4v; *.mkv; *.mov; *.mp2; *.mp2v; *.mp4; *.mp4v; *.mpa; *.mpe; *.mpeg; *.mpeg1; *.mpeg2; *.mpeg4; *.mpg; *.mpv2; *.mts; *.nsv; *.nuv; *.ogg; *.ogm; *.ogv; *.ogx; *.ps; *.rec; *.rm; *.rmvb; *.tod; *.ts; *.tts; *.vob; *.vro; *.webm; "
                 };
@@ -36,7 +41,7 @@ namespace ZembryoAnalyser
                 {
                     main.filePathText.Text = "File in use: " + ofd.FileName;
 
-                    using var action = Task.Run(new Action(() =>
+                    using Task action = Task.Run(new Action(() =>
                     {
                         main.CloseVideo();
                         main.SetWaitingState("Opening document...");
@@ -54,16 +59,21 @@ namespace ZembryoAnalyser
 
     public sealed class CloseDocumentCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -76,16 +86,21 @@ namespace ZembryoAnalyser
 
     public sealed class CalculateDataCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public async void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -110,16 +125,21 @@ namespace ZembryoAnalyser
 
     public sealed class ViewVideoCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -138,16 +158,21 @@ namespace ZembryoAnalyser
 
     public sealed class ViewBPMCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -166,16 +191,21 @@ namespace ZembryoAnalyser
 
     public sealed class ViewDataCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -194,16 +224,21 @@ namespace ZembryoAnalyser
 
     public sealed class ViewPlotCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -223,16 +258,21 @@ namespace ZembryoAnalyser
 
     public sealed class AddRectangleCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -247,16 +287,21 @@ namespace ZembryoAnalyser
 
     public sealed class AddEllipseCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -271,16 +316,21 @@ namespace ZembryoAnalyser
 
     public sealed class AddPolygonCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -295,16 +345,21 @@ namespace ZembryoAnalyser
 
     public sealed class EraseShapeCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -319,16 +374,21 @@ namespace ZembryoAnalyser
 
     public sealed class EditShapeCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -343,16 +403,21 @@ namespace ZembryoAnalyser
 
     public sealed class LineMeasureCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -368,16 +433,21 @@ namespace ZembryoAnalyser
 
     public sealed class PolyLineMeasureCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -393,16 +463,21 @@ namespace ZembryoAnalyser
 
     public sealed class RectangleMeasureCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -418,16 +493,21 @@ namespace ZembryoAnalyser
 
     public sealed class EllipseMeasureCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -443,16 +523,21 @@ namespace ZembryoAnalyser
 
     public sealed class PolygonMeasureCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -468,16 +553,21 @@ namespace ZembryoAnalyser
 
     public sealed class AngleMeasureCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -493,16 +583,21 @@ namespace ZembryoAnalyser
 
     public sealed class ExportCSVCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -515,16 +610,21 @@ namespace ZembryoAnalyser
 
     public sealed class ExportXLSXCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -537,16 +637,21 @@ namespace ZembryoAnalyser
 
     public sealed class ExportPNGCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -559,16 +664,21 @@ namespace ZembryoAnalyser
 
     public sealed class ExportJPGCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -581,16 +691,21 @@ namespace ZembryoAnalyser
 
     public sealed class ExportSVGCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -603,16 +718,21 @@ namespace ZembryoAnalyser
 
     public sealed class ExportJSONCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {
@@ -625,16 +745,21 @@ namespace ZembryoAnalyser
 
     public sealed class ExportPDFCommand : ICommand
     {
-        public bool CanExecute(object parameter) => true;
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
 
         public event EventHandler CanExecuteChanged;
 
-        public void OnCanExecuteChanged() =>
+        public void OnCanExecuteChanged()
+        {
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void Execute(object parameter)
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             if (main.videoCloseButton.IsEnabled && main.canStartNewCommand)
             {

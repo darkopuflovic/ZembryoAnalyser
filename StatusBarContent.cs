@@ -11,11 +11,15 @@ namespace ZembryoAnalyser
         private readonly Slider slider;
         private readonly ProgressBar progress;
 
-        public void SetSliderVisibility(bool visible) =>
+        public void SetSliderVisibility(bool visible)
+        {
             slider.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+        }
 
-        public void SetProgressVisibility(bool visible) =>
+        public void SetProgressVisibility(bool visible)
+        {
             progress.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+        }
 
         public StatusBarContent()
         {
@@ -48,22 +52,34 @@ namespace ZembryoAnalyser
             Add(progress);
         }
 
-        public void SetSliderBackground(Brush scb) =>
+        public void SetSliderBackground(Brush scb)
+        {
             slider.Background = scb;
+        }
 
-        public void SetProgressBackground(Brush scb) =>
+        public void SetProgressBackground(Brush scb)
+        {
             progress.Background = scb;
+        }
 
-        public void SetText(string t) =>
+        public void SetText(string t)
+        {
             text.Text = t;
+        }
 
-        public void MoveSlider(double width) =>
+        public void MoveSlider(double width)
+        {
             slider.Margin = new Thickness(width - slider.Width - 30, 0, 0, 0);
+        }
 
-        public void MoveProgress(double width) =>
+        public void MoveProgress(double width)
+        {
             progress.Margin = new Thickness(width - progress.Width - 30, 0, 0, 0);
+        }
 
-        public void SetProgress(double value) =>
+        public void SetProgress(double value)
+        {
             progress.Value = value;
+        }
     }
 }

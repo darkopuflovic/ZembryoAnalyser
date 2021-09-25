@@ -15,7 +15,7 @@ namespace ZembryoAnalyser
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            var document = new PdfDocument();
+            PdfDocument document = new();
 
             foreach (ResultSet result in results)
             {
@@ -29,16 +29,16 @@ namespace ZembryoAnalyser
                 double valueColumnWidth = maxTableWidth / 3;
                 double rowHeight = 20;
 
-                var graph = XGraphics.FromPdfPage(pdfPage);
-                var tf = new XTextFormatter(graph);
+                XGraphics graph = XGraphics.FromPdfPage(pdfPage);
+                XTextFormatter tf = new(graph);
 
-                var fontNaslov = new XFont("Times New Roman", 16, XFontStyle.Bold);
-                var fontPodNaslov = new XFont("Times New Roman", 12, XFontStyle.Regular);
+                XFont fontNaslov = new("Times New Roman", 16, XFontStyle.Bold);
+                XFont fontPodNaslov = new("Times New Roman", 12, XFontStyle.Regular);
 
                 Color col = result.Color.Color;
-                var headerFillColor = new XSolidBrush(XColor.FromArgb(col.R, col.G, col.B));
-                var headerTextColor = new XSolidBrush(ContrastColor(headerFillColor.Color));
-                var subTitleBrush = new XSolidBrush(XColor.FromArgb(255, 244, 176, 132));
+                XSolidBrush headerFillColor = new(XColor.FromArgb(col.R, col.G, col.B));
+                XSolidBrush headerTextColor = new(ContrastColor(headerFillColor.Color));
+                XSolidBrush subTitleBrush = new(XColor.FromArgb(255, 244, 176, 132));
                 XPen borderColor = XPens.Black;
                 XSolidBrush textColor = XBrushes.Black;
 
@@ -85,11 +85,11 @@ namespace ZembryoAnalyser
                 }
             }
 
-            var img = XImage.FromStream(image);
+            XImage img = XImage.FromStream(image);
             PdfPage page = document.AddPage();
             page.Height = img.PointHeight;
             page.Width = img.PointWidth;
-            var graphics = XGraphics.FromPdfPage(page);
+            XGraphics graphics = XGraphics.FromPdfPage(page);
             graphics.DrawImage(img, 0, 0);
 
             document.Save(fileName);

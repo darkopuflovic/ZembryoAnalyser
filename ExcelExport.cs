@@ -12,13 +12,13 @@ namespace ZembryoAnalyser
     {
         public static void ExportXLSX(string fileName, List<ResultSet> data)
         {
-            using var excel = SpreadsheetDocument.Create(fileName, SpreadsheetDocumentType.Workbook);
+            using SpreadsheetDocument excel = SpreadsheetDocument.Create(fileName, SpreadsheetDocumentType.Workbook);
 
             WorkbookPart part = excel.AddWorkbookPart();
 
-            AddStyleSheet(excel);
+            _ = AddStyleSheet(excel);
 
-            var listWorksheetParts = new List<WorksheetPart>();
+            List<WorksheetPart> listWorksheetParts = new();
             WorksheetPart worksheetPart = default;
 
             for (int k = 0; k < data.Count; k++)
@@ -29,11 +29,11 @@ namespace ZembryoAnalyser
 
                 listWorksheetParts.Add(worksheetPart);
 
-                var worksheet = new Worksheet();
+                Worksheet worksheet = new();
 
-                var columns = new Columns();
+                Columns columns = new();
 
-                var firstColumn = new Column
+                Column firstColumn = new()
                 {
                     Min = 1,
                     Max = 1,
@@ -41,7 +41,7 @@ namespace ZembryoAnalyser
                     CustomWidth = true
                 };
 
-                var secondColumn = new Column
+                Column secondColumn = new()
                 {
                     Min = 2,
                     Max = 2,
@@ -49,7 +49,7 @@ namespace ZembryoAnalyser
                     CustomWidth = true
                 };
 
-                var thirdColumn = new Column
+                Column thirdColumn = new()
                 {
                     Min = 3,
                     Max = 3,
@@ -63,9 +63,9 @@ namespace ZembryoAnalyser
 
                 worksheet.Append(columns);
 
-                SheetData sheetData = new SheetData();
+                SheetData sheetData = new();
 
-                Row row = new Row();
+                Row row = new();
 
                 row.Append(new Cell
                 {
@@ -130,7 +130,7 @@ namespace ZembryoAnalyser
                 worksheetPart.Worksheet.Save();
             }
 
-            var openXMLWriter = OpenXmlWriter.Create(excel.WorkbookPart);
+            OpenXmlWriter openXMLWriter = OpenXmlWriter.Create(excel.WorkbookPart);
 
             openXMLWriter.WriteStartElement(new Workbook());
             openXMLWriter.WriteStartElement(new Sheets());
@@ -154,10 +154,10 @@ namespace ZembryoAnalyser
 
         private static WorkbookStylesPart AddStyleSheet(SpreadsheetDocument spreadsheet)
         {
-            var stylesheet = spreadsheet.WorkbookPart.AddNewPart<WorkbookStylesPart>();
-            var workbookstylesheet = new Stylesheet();
+            WorkbookStylesPart stylesheet = spreadsheet.WorkbookPart.AddNewPart<WorkbookStylesPart>();
+            Stylesheet workbookstylesheet = new();
 
-            var regularFont = new Font
+            Font regularFont = new()
             {
                 FontSize = new FontSize
                 {
@@ -165,10 +165,10 @@ namespace ZembryoAnalyser
                 }
             };
 
-            var headerFont = new Font
+            Font headerFont = new()
             {
                 Bold = new Bold(),
-                Color = new DocumentFormat.OpenXml.Spreadsheet.Color
+                Color = new Color
                 {
                     Rgb = "FF800000"
                 },
@@ -178,14 +178,14 @@ namespace ZembryoAnalyser
                 }
             };
 
-            var fonts = new DocumentFormat.OpenXml.Spreadsheet.Fonts();
+            Fonts fonts = new();
 
             fonts.Append(regularFont);
             fonts.Append(headerFont);
 
-            var regularFill = new Fill(new PatternFill { PatternType = PatternValues.None });
-            var gray125 = new Fill(new PatternFill { PatternType = PatternValues.Gray125 });
-            var headerFill = new Fill
+            Fill regularFill = new(new PatternFill { PatternType = PatternValues.None });
+            Fill gray125 = new(new PatternFill { PatternType = PatternValues.Gray125 });
+            Fill headerFill = new()
             {
                 PatternFill = new PatternFill
                 {
@@ -195,19 +195,19 @@ namespace ZembryoAnalyser
                 }
             };
 
-            var fills = new Fills();
+            Fills fills = new();
 
             fills.Append(regularFill);
             fills.Append(gray125);
             fills.Append(headerFill);
 
-            var regularBorder = new DocumentFormat.OpenXml.Spreadsheet.Border();
-            var headerBorder = new DocumentFormat.OpenXml.Spreadsheet.Border
+            Border regularBorder = new();
+            Border headerBorder = new()
             {
                 BottomBorder = new BottomBorder
                 {
                     Style = BorderStyleValues.Thin,
-                    Color = new DocumentFormat.OpenXml.Spreadsheet.Color
+                    Color = new Color
                     {
                         Rgb = "FF8a4500"
                     }
@@ -215,7 +215,7 @@ namespace ZembryoAnalyser
                 TopBorder = new TopBorder
                 {
                     Style = BorderStyleValues.Thin,
-                    Color = new DocumentFormat.OpenXml.Spreadsheet.Color
+                    Color = new Color
                     {
                         Rgb = "FF8a4500"
                     }
@@ -223,7 +223,7 @@ namespace ZembryoAnalyser
                 LeftBorder = new LeftBorder
                 {
                     Style = BorderStyleValues.Thin,
-                    Color = new DocumentFormat.OpenXml.Spreadsheet.Color
+                    Color = new Color
                     {
                         Rgb = "FF8a4500"
                     }
@@ -231,33 +231,33 @@ namespace ZembryoAnalyser
                 RightBorder = new RightBorder
                 {
                     Style = BorderStyleValues.Thin,
-                    Color = new DocumentFormat.OpenXml.Spreadsheet.Color
+                    Color = new Color
                     {
                         Rgb = "FF8a4500"
                     }
                 }
             };
 
-            var borders = new Borders();
+            Borders borders = new();
 
             borders.Append(regularBorder);
             borders.Append(headerBorder);
 
-            var regularFormat = new CellFormat()
+            CellFormat regularFormat = new()
             {
                 FontId = 0,
                 FillId = 0,
                 BorderId = 0
             };
 
-            var headerFormat = new CellFormat()
+            CellFormat headerFormat = new()
             {
                 FontId = 1,
                 FillId = 2,
                 BorderId = 1
             };
 
-            var cellformats = new CellFormats();
+            CellFormats cellformats = new();
             cellformats.Append(regularFormat);
             cellformats.Append(headerFormat);
 

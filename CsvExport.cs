@@ -13,7 +13,7 @@ namespace ZembryoAnalyser
         {
             List<Dictionary<string, string>> data = GetValues(results);
 
-            var sb = new StringBuilder();
+            StringBuilder sb = new();
 
             Dictionary<string, string> el = data.FirstOrDefault();
 
@@ -32,14 +32,14 @@ namespace ZembryoAnalyser
 
         public static List<Dictionary<string, string>> GetValues(List<ResultSet> allResults)
         {
-            var list = new List<Dictionary<string, string>>();
+            List<Dictionary<string, string>> list = new();
 
             int count = allResults.FirstOrDefault()?.Result?.Count ?? 0;
 
             for (int i = 0; i < count; i++)
             {
                 int j = 0;
-                var row = new Dictionary<string, string>();
+                Dictionary<string, string> row = new();
 
                 foreach (ResultSet el in allResults)
                 {

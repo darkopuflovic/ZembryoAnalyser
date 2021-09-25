@@ -1,7 +1,9 @@
 ﻿using Crystalbyte.Ribbon.UI;
 using System;
 using System.Diagnostics;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Navigation;
 
 namespace ZembryoAnalyser
@@ -19,13 +21,19 @@ namespace ZembryoAnalyser
             InitializeComponent();
         }
 
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+            SetWindowStyles(PresentationSource.FromVisual(this) as HwndSource);
+        }
+
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            var info = new ProcessStartInfo(e.Uri.AbsoluteUri)
+            ProcessStartInfo info = new(e.Uri.AbsoluteUri)
             {
                 UseShellExecute = true
             };
-            using var _ = Process.Start(info);
+            using Process _ = Process.Start(info);
             e.Handled = true;
         }
 

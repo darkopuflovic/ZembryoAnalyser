@@ -72,11 +72,11 @@ namespace ZembryoAnalyser
         {
             OpenVideo(videoFileName);
 
-            using var frame = new Mat();
+            using Mat frame = new();
 
             if (lastVideo.Grab() && lastVideo.Retrieve(frame))
             {
-                using var bit = frame.ToBitmap();
+                using Bitmap bit = frame.ToBitmap();
                 IntPtr hbit = bit.GetHbitmap();
 
                 BitmapSource bs = Imaging.CreateBitmapSourceFromHBitmap(
@@ -99,11 +99,11 @@ namespace ZembryoAnalyser
         {
             OpenVideo(videoFileName);
 
-            using var frame = new Mat();
+            using Mat frame = new();
 
             if (lastVideo.Grab() && lastVideo.Retrieve(frame))
             {
-                using var bit = frame.ToBitmap();
+                using Bitmap bit = frame.ToBitmap();
                 return bit;
             }
             else
@@ -116,12 +116,12 @@ namespace ZembryoAnalyser
         {
             OpenVideo(videoFileName);
 
-            using var frame = new Mat();
+            using Mat frame = new();
             lastVideo.PosFrames = index - 1;
 
             if (lastVideo.Grab() && lastVideo.Retrieve(frame))
             {
-                using var bit = frame.ToBitmap();
+                using Bitmap bit = frame.ToBitmap();
                 IntPtr hbit = bit.GetHbitmap();
 
                 BitmapSource bs = Imaging.CreateBitmapSourceFromHBitmap(
@@ -144,11 +144,11 @@ namespace ZembryoAnalyser
         {
             OpenVideo(videoFileName);
 
-            var rectangles = new List<Rectangle>();
+            List<Rectangle> rectangles = new();
 
-            using var frame = new Mat();
-            var lastFrame = new Mat();
-            var sum = new Mat();
+            using Mat frame = new();
+            Mat lastFrame = new();
+            Mat sum = new();
 
             int max = lastVideo.FrameCount;
             int current = 0;
@@ -160,8 +160,8 @@ namespace ZembryoAnalyser
                     main.SetProgressValue((double)current / max * 100);
                 });
 
-                using var tempFrame = new Mat();
-                using var result = new Mat();
+                using Mat tempFrame = new();
+                using Mat result = new();
 
                 Cv2.CvtColor(frame, tempFrame, ColorConversionCodes.RGB2GRAY);
 
@@ -175,7 +175,7 @@ namespace ZembryoAnalyser
                     }
                     else
                     {
-                        using var newResult = new Mat();
+                        using Mat newResult = new();
                         result.ConvertTo(newResult, MatType.CV_64FC1);
                         sum = sum.Add(newResult);
                     }
@@ -196,7 +196,7 @@ namespace ZembryoAnalyser
             sum.MinMaxIdx(out double minVal, out double maxVal);
             _ = Cv2.Threshold(sum, sum, maxVal * 0.5, 255, ThresholdTypes.Binary);
 
-            using var image = new Mat();
+            using Mat image = new();
             sum.ConvertTo(image, MatType.CV_8UC3);
 
             Cv2.FindContours(image, out Point[][] points, out HierarchyIndex[] index, RetrievalModes.List, ContourApproximationModes.ApproxSimple);
@@ -224,18 +224,18 @@ namespace ZembryoAnalyser
         {
             OpenVideo(videoFileName);
 
-            var result = new List<List<double>>();
+            List<List<double>> result = new();
 
             if (shapes.Count <= 0)
             {
                 return result;
             }
 
-            using var image = new Mat();
+            using Mat image = new();
             int current = 0;
             int maxFrames = max > 0 ? max : lastVideo.FrameCount;
 
-            var shapeIndexes = new List<List<int>>();
+            List<List<int>> shapeIndexes = new();
 
             foreach (Shape s in shapes)
             {
@@ -251,8 +251,8 @@ namespace ZembryoAnalyser
                         width = (int)rc.Width;
                         height = (int)rc.Height;
                     });
-                    var indexes = new List<int>();
-                    var r = new Rectangle(x, y, width, height);
+                    List<int> indexes = new();
+                    Rectangle r = new(x, y, width, height);
 
                     for (int i = 0; i < lastVideo.FrameHeight; i++)
                     {
@@ -277,8 +277,8 @@ namespace ZembryoAnalyser
                         width = (int)el.Width;
                         height = (int)el.Height;
                     });
-                    var indexes = new List<int>();
-                    var r = new Rectangle(x, y, width, height);
+                    List<int> indexes = new();
+                    Rectangle r = new(x, y, width, height);
 
                     for (int i = 0; i < lastVideo.FrameHeight; i++)
                     {
@@ -302,7 +302,7 @@ namespace ZembryoAnalyser
                         polygon = sp.Points.Select(p => new System.Drawing.Point((int)p.X, (int)p.Y)).ToArray();
                     });
 
-                    var indexes = new List<int>();
+                    List<int> indexes = new();
 
                     for (int i = 0; i < lastVideo.FrameHeight; i++)
                     {

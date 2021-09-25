@@ -20,22 +20,22 @@ namespace ZembryoAnalyser
 
         private void Save()
         {
-            using var store = IsolatedStorageFile.GetUserStoreForAssembly();
+            using IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForAssembly();
             using IsolatedStorageFileStream stream = store.OpenFile("settings.xml", FileMode.Create, FileAccess.Write);
-            using var xdw = XmlDictionaryWriter.CreateTextWriter(stream, Encoding.UTF8);
+            using XmlDictionaryWriter xdw = XmlDictionaryWriter.CreateTextWriter(stream, Encoding.UTF8);
             serializer.WriteObject(xdw, data);
         }
 
         private void Load()
         {
-            using var store = IsolatedStorageFile.GetUserStoreForAssembly();
+            using IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForAssembly();
             if (store.FileExists("settings.xml"))
             {
                 using IsolatedStorageFileStream stream = store.OpenFile("settings.xml", FileMode.Open, FileAccess.Read);
 
                 if (stream.Length > 0)
                 {
-                    using var xdr = XmlDictionaryReader.CreateTextReader(stream, Encoding.UTF8, new XmlDictionaryReaderQuotas(), null);
+                    using XmlDictionaryReader xdr = XmlDictionaryReader.CreateTextReader(stream, Encoding.UTF8, new XmlDictionaryReaderQuotas(), null);
                     data = (SettingsData)serializer.ReadObject(xdr);
                 }
             }
@@ -55,10 +55,12 @@ namespace ZembryoAnalyser
             Save();
         }
 
-        public object Get(string key) =>
-            data.Dictionary.ContainsKey(key) ?
-                data.Dictionary.TryGetValue(key, out object val) && val != null ?
-                    val : default : default;
+        public object Get(string key)
+        {
+            return data.Dictionary.ContainsKey(key) ?
+data.Dictionary.TryGetValue(key, out object val) && val != null ?
+val : default : default;
+        }
 
         public void Remove(string key)
         {

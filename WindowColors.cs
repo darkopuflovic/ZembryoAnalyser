@@ -24,12 +24,14 @@ namespace ZembryoAnalyser
             }
         }
 
-        private static Color? BlendColor(Color color1, Color color2, double color2Perc) =>
-            color2Perc is < 0 or > 100 ? null
-                : Color.FromRgb(
-                    BlendColorChannel(color1.R, color2.R, color2Perc),
-                    BlendColorChannel(color1.G, color2.G, color2Perc),
-                    BlendColorChannel(color1.B, color2.B, color2Perc));
+        private static Color? BlendColor(Color color1, Color color2, double color2Perc)
+        {
+            return color2Perc is < 0 or > 100 ? null
+: Color.FromRgb(
+BlendColorChannel(color1.R, color2.R, color2Perc),
+BlendColorChannel(color1.G, color2.G, color2Perc),
+BlendColorChannel(color1.B, color2.B, color2Perc));
+        }
 
         private static byte BlendColorChannel(double channel1, double channel2, double channel2Perc)
         {
@@ -62,7 +64,7 @@ namespace ZembryoAnalyser
         {
             Color? targetColor = GetColorizationColor();
             Interop.DWMCOLORIZATIONPARAMS? parameters = GetColorizationParameters();
-            var baseColor = Color.FromRgb(217, 217, 217);
+            Color baseColor = Color.FromRgb(217, 217, 217);
 
             return targetColor.HasValue && parameters.HasValue
                 ? BlendColor(targetColor.Value, baseColor, 100 - parameters.Value.ColorizationColorBalance)
@@ -96,13 +98,15 @@ namespace ZembryoAnalyser
             }
         }
 
-        public static Color? GetAccentColor() =>
-            Environment.OSVersion.Version.Major switch
+        public static Color? GetAccentColor()
+        {
+            return Environment.OSVersion.Version.Major switch
             {
                 >= 10 => GetColorizationColor(),
                 >= 7 => GetChromeColor(),
                 _ => null
             };
+        }
 
         public static bool? AreAppsInDarkMode()
         {

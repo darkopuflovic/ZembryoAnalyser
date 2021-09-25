@@ -8,6 +8,7 @@ using System.Linq;
 using System;
 using System.Globalization;
 using Microsoft.Win32;
+using System.Windows.Interop;
 
 namespace ZembryoAnalyser
 {
@@ -30,15 +31,15 @@ namespace ZembryoAnalyser
             definedColors = new List<DefinedColor>();
             allDefinedColors = new List<ColorListStructure>();
 
-            var colors = typeof(Colors).GetProperties().Select(p => p.Name).ToList();
+            List<string> colors = typeof(Colors).GetProperties().Select(p => p.Name).ToList();
 
             int i = 0;
 
             foreach (string s in colors)
             {
-                var c = (Color)ColorConverter.ConvertFromString(s);
+                Color c = (Color)ColorConverter.ConvertFromString(s);
                 definedColors.Add(new DefinedColor { Index = i, A = c.A, B = c.B, G = c.G, R = c.R });
-                var cls = new ColorListStructure { Name = s, Color = new SolidColorBrush(c), HexText = c.ToString(CultureInfo.InvariantCulture), RGBText = $"A: {c.A}    R: {c.R}    G: {c.G}    B: {c.B}" };
+                ColorListStructure cls = new() { Name = s, Color = new SolidColorBrush(c), HexText = c.ToString(CultureInfo.InvariantCulture), RGBText = $"A: {c.A}    R: {c.R}    G: {c.G}    B: {c.B}" };
                 allDefinedColors.Add(cls);
                 i++;
             }
@@ -70,6 +71,12 @@ namespace ZembryoAnalyser
             loaded = true;
         }
 
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+            SetWindowStyles(PresentationSource.FromVisual(this) as HwndSource);
+        }
+
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             byte a = (byte)colorPicker.alphaSlider.Value;
@@ -99,19 +106,25 @@ namespace ZembryoAnalyser
             clicked = false;
         }
 
-        public Brush GetAccentBrush() =>
-            colorPicker.GetSelectedBrush();
+        public Brush GetAccentBrush()
+        {
+            return colorPicker.GetSelectedBrush();
+        }
 
-        public void SetColor(Color color) =>
+        public void SetColor(Color color)
+        {
             colorPicker.SetColor(color);
+        }
 
-        public void SetColor(Color color, bool automatically) =>
+        public void SetColor(Color color, bool automatically)
+        {
             colorPicker.SetColor(color, automatically);
+        }
 
         private void ColorList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             clicked = true;
-            var list = (ColorListStructure)colorList.SelectedItem;
+            ColorListStructure list = (ColorListStructure)colorList.SelectedItem;
 
             if (list != null && loaded)
             {
@@ -148,7 +161,7 @@ namespace ZembryoAnalyser
 
                 if (accent.HasValue)
                 {
-                    var brush = new SolidColorBrush(accent.Value);
+                    SolidColorBrush brush = new(accent.Value);
                     colorizationColor.Visibility = Visibility.Visible;
                     colorizationColor.Background = brush;
                 }
@@ -166,8 +179,9 @@ namespace ZembryoAnalyser
             SetColor(((SolidColorBrush)AccentBrush).Color, true);
         }
 
-        private bool? IsAppDark() =>
-            main.BackgroundOptions switch
+        private bool? IsAppDark()
+        {
+            return main.BackgroundOptions switch
             {
                 BackgroundColorOptions.SystemApps => true,
                 BackgroundColorOptions.SystemWindows => false,
@@ -175,6 +189,7 @@ namespace ZembryoAnalyser
                 BackgroundColorOptions.Dark => null,
                 _ => null
             };
+        }
 
         private void SystemEvents_UserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
         {
@@ -314,14 +329,14 @@ namespace ZembryoAnalyser
         private void Accent_Click(object sender, RoutedEventArgs e)
         {
             main.AccentOptions = AccentColorOptions.AccentColor;
-            var brush = (SolidColorBrush)(sender as Button).Background;
+            SolidColorBrush brush = (SolidColorBrush)(sender as Button).Background;
             SetBrush(brush);
         }
 
         private void Col_Click(object sender, RoutedEventArgs e)
         {
             main.AccentOptions = AccentColorOptions.Color;
-            var brush = (SolidColorBrush)(sender as Button).Background;
+            SolidColorBrush brush = (SolidColorBrush)(sender as Button).Background;
             SetBrush(brush);
         }
 

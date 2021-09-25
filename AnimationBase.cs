@@ -17,8 +17,8 @@ namespace ZembryoAnalyser
 
         public static void Animate(FrameworkElement element, string propertyPath, TimeSpan duration, double from, double to)
         {
-            var s = new Storyboard();
-            var da = new DoubleAnimation();
+            Storyboard s = new();
+            DoubleAnimation da = new();
             s.Children.Add(da);
             Storyboard.SetTarget(da, element);
             Storyboard.SetTargetProperty(da, new PropertyPath(propertyPath));
@@ -49,8 +49,8 @@ namespace ZembryoAnalyser
         {
             element.Opacity = 0.0;
             element.Visibility = Visibility.Visible;
-            var s = new Storyboard();
-            var da = new DoubleAnimation();
+            Storyboard s = new();
+            DoubleAnimation da = new();
             s.Children.Add(da);
             Storyboard.SetTarget(da, element);
             Storyboard.SetTargetProperty(da, new PropertyPath("(FrameworkElement.Opacity)"));
@@ -63,12 +63,12 @@ namespace ZembryoAnalyser
         private static void HideElement(FrameworkElement element)
         {
             element.Opacity = 1.0;
-            var s = new Storyboard();
+            Storyboard s = new();
             s.Completed += (p, q) =>
             {
                 element.Visibility = Visibility.Collapsed;
             };
-            var da = new DoubleAnimation();
+            DoubleAnimation da = new();
             s.Children.Add(da);
             Storyboard.SetTarget(da, element);
             Storyboard.SetTargetProperty(da, new PropertyPath("(FrameworkElement.Opacity)"));

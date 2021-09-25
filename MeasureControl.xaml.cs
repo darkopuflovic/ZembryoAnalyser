@@ -39,8 +39,10 @@ namespace ZembryoAnalyser
             angle = null;
         }
 
-        public void SetStatusBar(StatusBarContent content) =>
+        public void SetStatusBar(StatusBarContent content)
+        {
             status = content;
+        }
 
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -184,7 +186,7 @@ namespace ZembryoAnalyser
                             status.SetText("Ready");
                             canvas.ReleaseMouseCapture();
                         }
-                        
+
                         if (angle?.Points?.Count == 3)
                         {
                             status.SetText($"Angle: {Math.Round(Math.Abs(CalculateAngle(angle.Points.ToArray())), 2)}°");
@@ -200,7 +202,7 @@ namespace ZembryoAnalyser
         private static double PolygonArea(List<Point> points)
         {
             int num_points = points.Count;
-            var pts = new Point[num_points + 1];
+            Point[] pts = new Point[num_points + 1];
             points.CopyTo(pts, 0);
             pts[num_points] = points[0];
 
@@ -285,7 +287,7 @@ namespace ZembryoAnalyser
                         rectangle.Width = Math.Abs(point.X - lastPoint.X);
                         rectangle.Height = Math.Abs(point.Y - lastPoint.Y);
 
-                        var rg = (RectangleGeometry)rectangle.RenderedGeometry;
+                        RectangleGeometry rg = (RectangleGeometry)rectangle.RenderedGeometry;
                         status.SetText($"Perimeter = {Math.Round((2 * rg.Rect.Width) + (2 * rg.Rect.Height), 2)} px, a = {Math.Round(rg.Rect.Width, 2)}, b = {Math.Round(rg.Rect.Height, 2)}, Area = {Math.Round(rg.GetArea(), 2)} px²");
                     }
                     break;
@@ -298,7 +300,7 @@ namespace ZembryoAnalyser
                         ellipse.Width = Math.Abs(point.X - lastPoint.X);
                         ellipse.Height = Math.Abs(point.Y - lastPoint.Y);
 
-                        var rg = (EllipseGeometry)ellipse.RenderedGeometry;
+                        EllipseGeometry rg = (EllipseGeometry)ellipse.RenderedGeometry;
                         status.SetText($"Perimeter = {Math.Round(2 * Math.PI * Math.Sqrt(((rg.RadiusX * rg.RadiusX) + (rg.RadiusY * rg.RadiusY)) / (2 * 1.0)), 2)} px, a = {Math.Round(rg.RadiusX, 2)}, b = {Math.Round(rg.RadiusY, 2)}, Area = {Math.Round(rg.GetArea(), 2)} px²");
                     }
                     break;
@@ -311,18 +313,22 @@ namespace ZembryoAnalyser
             }
         }
 
-        private static double Length(Point p1, Point p2) =>
-            Math.Round(Math.Sqrt(Math.Pow(p2.Y - p1.Y, 2) + Math.Pow(p2.X - p1.X, 2)), 2);
+        private static double Length(Point p1, Point p2)
+        {
+            return Math.Round(Math.Sqrt(Math.Pow(p2.Y - p1.Y, 2) + Math.Pow(p2.X - p1.X, 2)), 2);
+        }
 
-        private static string Length(Line line) =>
-            Math.Round(Math.Sqrt(Math.Pow(line.Y2 - line.Y1, 2) + Math.Pow(line.X2 - line.X1, 2)), 2).ToString("N2", CultureInfo.InvariantCulture);
+        private static string Length(Line line)
+        {
+            return Math.Round(Math.Sqrt(Math.Pow(line.Y2 - line.Y1, 2) + Math.Pow(line.X2 - line.X1, 2)), 2).ToString("N2", CultureInfo.InvariantCulture);
+        }
 
         private static double CalculateAngle(Point[] points)
         {
             if (points.Length == 3)
             {
-                var v1 = new Vector(points[0].X - points[1].X, points[0].Y - points[1].Y);
-                var v2 = new Vector(points[2].X - points[1].X, points[2].Y - points[1].Y);
+                Vector v1 = new(points[0].X - points[1].X, points[0].Y - points[1].Y);
+                Vector v2 = new(points[2].X - points[1].X, points[2].Y - points[1].Y);
 
                 return Vector.AngleBetween(v1, v2);
             }

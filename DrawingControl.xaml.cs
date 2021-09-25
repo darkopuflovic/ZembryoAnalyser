@@ -19,11 +19,7 @@ namespace ZembryoAnalyser
 
         public GeometryType GeometryType
         {
-            get
-            {
-                return type;
-            }
-
+            get => type;
             set
             {
                 type = value;
@@ -85,7 +81,7 @@ namespace ZembryoAnalyser
 
         public void InsertRectangle(Brush stroke, Brush fill, string name, int left, int top, int width, int height)
         {
-            var rect = new Rectangle
+            Rectangle rect = new()
             {
                 Fill = fill,
                 Stroke = stroke,
@@ -104,7 +100,7 @@ namespace ZembryoAnalyser
 
         public void InsertEllipse(Brush stroke, Brush fill, string name, int left, int top, int width, int height)
         {
-            var eli = new Ellipse
+            Ellipse eli = new()
             {
                 Fill = fill,
                 Stroke = stroke,
@@ -121,11 +117,15 @@ namespace ZembryoAnalyser
             Geometries.Add(eli);
         }
 
-        private (string name, Color color)? GetNextColor() =>
-            colors.Count > 0 ? colors.Dequeue() : null;
+        private (string name, Color color)? GetNextColor()
+        {
+            return colors.Count > 0 ? colors.Dequeue() : null;
+        }
 
-        private void ReturnColor((string name, Color color) c) =>
+        private void ReturnColor((string name, Color color) c)
+        {
             colors.Enqueue(c);
+        }
 
         private void GeometryFinished()
         {
@@ -336,7 +336,7 @@ namespace ZembryoAnalyser
 
         private static void ShowNoMoreColorsInfo()
         {
-            var main = (MainWindow)Application.Current.MainWindow;
+            MainWindow main = (MainWindow)Application.Current.MainWindow;
 
             _ = Task.Run(async () =>
             {
@@ -360,7 +360,7 @@ namespace ZembryoAnalyser
             {
                 Point el = points[i];
 
-                var eli = new Ellipse
+                Ellipse eli = new()
                 {
                     Height = 9,
                     Width = 9,
@@ -404,7 +404,7 @@ namespace ZembryoAnalyser
                     int ind = FindIndexToInsertTo(points, el);
                     points.Insert(ind, el);
 
-                    var eli = new Ellipse
+                    Ellipse eli = new()
                     {
                         Height = 9,
                         Width = 9,
@@ -511,7 +511,7 @@ namespace ZembryoAnalyser
                     else
                     {
                         Point current = ReturnInsideImage(q.GetPosition(editCanvas));
-                        var pen = new Pen(Brushes.Transparent, 5);
+                        Pen pen = new(Brushes.Transparent, 5);
 
                         if (editShape.RenderedGeometry.StrokeContains(pen, current))
                         {
@@ -629,7 +629,7 @@ namespace ZembryoAnalyser
             }
             else
             {
-                var closest = new Point(p1.X + (t * dx), p1.Y + (t * dy));
+                Point closest = new(p1.X + (t * dx), p1.Y + (t * dy));
                 dx = pt.X - closest.X;
                 dy = pt.Y - closest.Y;
             }
@@ -639,7 +639,7 @@ namespace ZembryoAnalyser
 
         private void EditRectangleAndEllipse(bool rectangle)
         {
-            var tempRectangle = new Rectangle
+            Rectangle tempRectangle = new()
             {
                 Fill = Brushes.Transparent,
                 Stroke = rectangle ? Brushes.Indigo : Brushes.Firebrick,
@@ -779,11 +779,15 @@ namespace ZembryoAnalyser
             SetMouseCursor();
         }
 
-        private static bool InsideImage(double newPos, double newSize, double imageSize) =>
-            newPos >= 0 && newPos + newSize <= imageSize;
+        private static bool InsideImage(double newPos, double newSize, double imageSize)
+        {
+            return newPos >= 0 && newPos + newSize <= imageSize;
+        }
 
-        private bool IsPointInsideImage(Point p) =>
-            p.X > 0 && p.X < Width && p.Y > 0 && p.Y < Height;
+        private bool IsPointInsideImage(Point p)
+        {
+            return p.X > 0 && p.X < Width && p.Y > 0 && p.Y < Height;
+        }
 
         private Point ReturnInsideImage(Point p)
         {
