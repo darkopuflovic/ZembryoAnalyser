@@ -27,10 +27,10 @@ namespace ZembryoAnalyser
         private static Color? BlendColor(Color color1, Color color2, double color2Perc)
         {
             return color2Perc is < 0 or > 100 ? null
-: Color.FromRgb(
-BlendColorChannel(color1.R, color2.R, color2Perc),
-BlendColorChannel(color1.G, color2.G, color2Perc),
-BlendColorChannel(color1.B, color2.B, color2Perc));
+                : Color.FromRgb(
+                    BlendColorChannel(color1.R, color2.R, color2Perc),
+                    BlendColorChannel(color1.G, color2.G, color2Perc),
+                    BlendColorChannel(color1.B, color2.B, color2Perc));
         }
 
         private static byte BlendColorChannel(double channel1, double channel2, double channel2Perc)

@@ -17,8 +17,8 @@ namespace ZembryoAnalyser
         public static Brush ToBrush(this object value, byte[] defaultBrush = null)
         {
             return value is byte[] val
-? new SolidColorBrush(Color.FromArgb(val[0], val[1], val[2], val[3]))
-: new SolidColorBrush(Color.FromArgb(defaultBrush[0], defaultBrush[1], defaultBrush[2], defaultBrush[3]));
+                ? new SolidColorBrush(Color.FromArgb(val[0], val[1], val[2], val[3]))
+                : new SolidColorBrush(Color.FromArgb(defaultBrush[0], defaultBrush[1], defaultBrush[2], defaultBrush[3]));
         }
 
         public static AccentColorOptions ToAccentOptions(this object value, AccentColorOptions defaultOption)

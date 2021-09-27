@@ -58,8 +58,8 @@ namespace ZembryoAnalyser
         public object Get(string key)
         {
             return data.Dictionary.ContainsKey(key) ?
-data.Dictionary.TryGetValue(key, out object val) && val != null ?
-val : default : default;
+                   data.Dictionary.TryGetValue(key, out object val) && val != null ?
+                        val : default : default;
         }
 
         public void Remove(string key)
