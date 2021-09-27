@@ -39,7 +39,7 @@ namespace ZembryoAnalyser
             return Math.Min((byte)Math.Round(buff), (byte)255);
         }
 
-        private static Interop.DWMCOLORIZATIONPARAMS? GetColorizationParameters()
+        private static DwmColorizationParams? GetColorizationParameters()
         {
             try
             {
@@ -50,7 +50,7 @@ namespace ZembryoAnalyser
                     return null;
                 }
 
-                succeed = Interop.DwmGetColorizationParameters(out Interop.DWMCOLORIZATIONPARAMS parameters);
+                succeed = Interop.DwmGetColorizationParameters(out DwmColorizationParams parameters);
 
                 return succeed != 0 ? null : parameters;
             }
@@ -63,7 +63,7 @@ namespace ZembryoAnalyser
         private static Color? GetChromeColor()
         {
             Color? targetColor = GetColorizationColor();
-            Interop.DWMCOLORIZATIONPARAMS? parameters = GetColorizationParameters();
+            DwmColorizationParams? parameters = GetColorizationParameters();
             Color baseColor = Color.FromRgb(217, 217, 217);
 
             return targetColor.HasValue && parameters.HasValue
@@ -75,7 +75,7 @@ namespace ZembryoAnalyser
         {
             try
             {
-                Interop.DWMCOLORIZATIONPARAMS? parameters = GetColorizationParameters();
+                DwmColorizationParams? parameters = GetColorizationParameters();
 
                 if (!parameters.HasValue)
                 {
