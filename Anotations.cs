@@ -6,8 +6,10 @@ namespace ZembryoAnalyser
     public sealed class NotifyPropertyChangedInvocatorAttribute : Attribute
     {
         public NotifyPropertyChangedInvocatorAttribute() { }
-        public NotifyPropertyChangedInvocatorAttribute(string parameterName) =>
+        public NotifyPropertyChangedInvocatorAttribute(string parameterName)
+        {
             ParameterName = parameterName;
+        }
 
         [UsedImplicitly]
         public string ParameterName { get; private set; }

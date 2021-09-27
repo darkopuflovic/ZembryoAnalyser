@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace ZembryoAnalyser
 {
-    public static class Interop
+    internal static class Interop
     {
         [DllImport("Dwmapi.dll")]
         internal static extern int DwmIsCompositionEnabled([MarshalAs(UnmanagedType.Bool)] out bool pfEnabled);

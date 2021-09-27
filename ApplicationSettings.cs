@@ -4,6 +4,9 @@
     {
         public static SettingsDatabase Settings { get; set; }
 
-        static ApplicationSettings() => Settings = new SettingsDatabase();
+        static ApplicationSettings()
+        {
+            Settings = new SettingsDatabase();
+        }
     }
 }
