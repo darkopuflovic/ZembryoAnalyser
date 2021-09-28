@@ -1084,6 +1084,8 @@ namespace ZembryoAnalyser
             {
                 roundedButtons.IsEnabled = false;
             }
+
+            GetQuickAccessBar().QuickAccessBarCornerRadius = isCornered ? isColorButtonRounded ? 8 : 4 : 0;
         }
 
         private void GetAccentColorOptions()
