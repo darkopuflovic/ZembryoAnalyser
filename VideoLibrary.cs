@@ -73,6 +73,7 @@ namespace ZembryoAnalyser
             OpenVideo(videoFileName);
 
             using Mat frame = new();
+            lastVideo.PosFrames = 0;
 
             if (lastVideo.Grab() && lastVideo.Retrieve(frame))
             {
@@ -145,6 +146,7 @@ namespace ZembryoAnalyser
             OpenVideo(videoFileName);
 
             List<Rectangle> rectangles = new();
+            lastVideo.PosFrames = 0;
 
             using Mat frame = new();
             Mat lastFrame = new();
@@ -225,6 +227,7 @@ namespace ZembryoAnalyser
             OpenVideo(videoFileName);
 
             List<List<double>> result = new();
+            lastVideo.PosFrames = 0;
 
             if (shapes.Count <= 0)
             {

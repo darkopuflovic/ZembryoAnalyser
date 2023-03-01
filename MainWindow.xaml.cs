@@ -567,10 +567,9 @@ namespace ZembryoAnalyser
                     Color = color,
                     MarkerSize = 3,
                     MarkerFill = markerColor,
-                    MarkerType = MarkerType.Circle
+                    MarkerType = MarkerType.Circle,
+                    TrackerFormatString = "{0}\n{1}:\t\t{2:0.00}\n{3}:\t{4:0.00}"
                 };
-
-                series.TrackerFormatString = "{0}\n{1}:\t\t{2:0.00}\n{3}:\t{4:0.00}";
 
                 int numOfFrames = realNumberOfFrames <= 0 ? numberOfFrames : realNumberOfFrames;
 
@@ -636,7 +635,7 @@ namespace ZembryoAnalyser
             plot.Model.Legends.ToList().ForEach(p => p.LegendBorder = foreOxy);
             plot.Model.PlotAreaBorderColor = foreOxy;
 
-            foreach (LinearAxis l in plot.Model.Axes)
+            foreach (LinearAxis l in plot.Model.Axes.Cast<LinearAxis>())
             {
                 l.MinorTicklineColor = foreOxy;
                 l.TicklineColor = foreOxy;
