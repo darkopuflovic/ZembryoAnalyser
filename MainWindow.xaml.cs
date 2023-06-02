@@ -1173,7 +1173,7 @@ namespace ZembryoAnalyser
             var accentOptionsTemp = AccentOptions;
             var accentBrushTemp = AccentBrush;
             var backgroundTemp = Background;
-            var backgroundOptionsTemp = (BackgroundColorOptions)ApplicationSettings.Settings.Get("BackgroundOptions");
+            var backgroundOptionsTemp = ApplicationSettings.Settings.Get("BackgroundOptions").ToBackgroundOptions(BackgroundColorOptions.SystemApps);
             var hoverBrushTemp = HoverBrush;
             var foregroundTemp = Foreground;
             var inactiveBrushTemp = InactiveBrush;
