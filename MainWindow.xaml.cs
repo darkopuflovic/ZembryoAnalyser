@@ -1170,6 +1170,14 @@ namespace ZembryoAnalyser
 
         private void PickColor_Click(object sender, RoutedEventArgs e)
         {
+            var accentOptionsTemp = AccentOptions;
+            var accentBrushTemp = AccentBrush;
+            var backgroundTemp = Background;
+            var backgroundOptionsTemp = (BackgroundColorOptions)ApplicationSettings.Settings.Get("BackgroundOptions");
+            var hoverBrushTemp = HoverBrush;
+            var foregroundTemp = Foreground;
+            var inactiveBrushTemp = InactiveBrush;
+
             ColorDialog cd = new(this)
             {
                 Owner = this,
@@ -1192,6 +1200,20 @@ namespace ZembryoAnalyser
                 AccentBrush = cd.GetAccentBrush();
                 AccentChanged();
                 SaveAccentColor();
+            }
+            else
+            {
+                AccentOptions = accentOptionsTemp;
+                AccentBrush = accentBrushTemp;
+                Background = backgroundTemp;
+                ApplicationSettings.Settings.Set("BackgroundOptions", (int)backgroundOptionsTemp);
+                BackgroundOptions = backgroundOptionsTemp;
+                HoverBrush = hoverBrushTemp;
+                Foreground = foregroundTemp;
+                InactiveBrush = inactiveBrushTemp;
+                AccentChanged();
+                SaveAccentColor();
+                SetBackground();
             }
 
             cd.Close();
