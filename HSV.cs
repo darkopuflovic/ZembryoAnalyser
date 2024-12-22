@@ -1,16 +1,8 @@
-﻿namespace ZembryoAnalyser
-{
-    public class HSV
-    {
-        public double H { get; set; }
-        public double S { get; set; }
-        public double V { get; set; }
+﻿namespace ZembryoAnalyser;
 
-        public HSV(double h, double s, double v)
-        {
-            H = h;
-            S = s;
-            V = v;
-        }
-    }
+public class HSV(double h, double s, double v)
+{
+    public double H { get; set; } = h;
+    public double S { get; set; } = s;
+    public double V { get; set; } = v;
 }

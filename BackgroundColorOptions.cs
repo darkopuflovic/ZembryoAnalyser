@@ -1,10 +1,9 @@
-﻿namespace ZembryoAnalyser
+﻿namespace ZembryoAnalyser;
+
+public enum BackgroundColorOptions
 {
-    public enum BackgroundColorOptions
-    {
-        Light,
-        Dark,
-        SystemWindows,
-        SystemApps
-    }
+    Light,
+    Dark,
+    SystemWindows,
+    SystemApps
 }

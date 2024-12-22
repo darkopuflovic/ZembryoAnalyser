@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:zembryoanalyser="clr-namespace:ZembryoAnalyser" d:DataContext="{d:DesignInstance Type=zembryoanalyser:StatusBarContent}"
+             xmlns:zembryoanalyser="clr-namespace:ZembryoAnalyser"
+             d:DataContext="{d:DesignInstance Type=zembryoanalyser:DrawingControl}"
              mc:Ignorable="d"
              LostMouseCapture="UserControl_LostMouseCapture">
     <Grid Name="grid">

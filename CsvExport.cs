@@ -5,80 +5,126 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace ZembryoAnalyser
+namespace ZembryoAnalyser;
+
+public static class CsvExport
 {
-    public static class CsvExport
+    public static void ExportCsv(string fileName, List<ResultSetHR> results)
     {
-        public static void ExportCsv(string fileName, List<ResultSet> results)
+        Dictionary<int, List<string>> data = GetValues(results);
+        var els =
+            from n in results.Select(p => p.Name)
+            from c in new List<string> { "Index", "Time", "Value" }
+            select $"{n} - {c}";
+        GenerateCSV(fileName, els.ToList(), data);
+    }
+
+    public static void ExportCsv(string fileName, List<ResultSetMD> results)
+    {
+        Dictionary<int, List<string>> data = GetValues(results);
+        var els =
+            from n in results.Select(p => p.Name)
+            from c in new List<string> { "Index", "Time", "Value" }
+            select $"{n} - {c}";
+        GenerateCSV(fileName, els.ToList(), data);
+    }
+
+    public static void ExportCsv(string fileName, List<ResultSetET> results)
+    {
+        Dictionary<int, List<string>> data = GetValues(results);
+        var els =
+            from n in results.Select(p => p.Name)
+            from c in new List<string> { "Index", "Time", "Value" }
+            select $"{n} - {c}";
+        GenerateCSV(fileName, els.ToList(), data);
+    }
+
+    private static void GenerateCSV(string fileName, List<string> columns, Dictionary<int, List<string>> data)
+    {
+        StringBuilder sb = new();
+
+        _ = sb.AppendLine(string.Join(",", columns));
+
+        foreach (List<string> d in data.Values)
         {
-            List<Dictionary<string, string>> data = GetValues(results);
-
-            StringBuilder sb = new();
-
-            Dictionary<string, string> el = data.FirstOrDefault();
-
-            if (el != null)
-            {
-                _ = sb.AppendLine(string.Join(",", el.Keys));
-            }
-
-            foreach (Dictionary<string, string> d in data)
-            {
-                _ = sb.AppendLine(string.Join(",", d.Values));
-            }
-
-            File.WriteAllText(fileName, sb.ToString());
+            _ = sb.AppendLine(string.Join(",", d));
         }
 
-        public static List<Dictionary<string, string>> GetValues(List<ResultSet> allResults)
+        File.WriteAllText(fileName, sb.ToString());
+    }
+
+    private static Dictionary<int, List<string>> GetValues(List<ResultSetHR> allResults)
+    {
+        Dictionary<int, List<string>> dict = [];
+
+        int count = allResults.FirstOrDefault()?.Result?.Count ?? 0;
+
+        for (int i = 0; i < count; i++)
         {
-            List<Dictionary<string, string>> list = new();
+            List<string> row = [];
 
-            int count = allResults.FirstOrDefault()?.Result?.Count ?? 0;
-
-            for (int i = 0; i < count; i++)
+            foreach (ResultSetHR el in allResults)
             {
-                int j = 0;
-                Dictionary<string, string> row = new();
+                HRData dataRow = el.Result.ElementAt(i);
 
-                foreach (ResultSet el in allResults)
-                {
-                    Data dataRow = el.Result.ElementAt(i);
-
-                    if (row.ContainsKey($"{el.Name} - Index"))
-                    {
-                        row[$"{el.Name} - Index"] = dataRow.Index.ToString(CultureInfo.InvariantCulture);
-                    }
-                    else
-                    {
-                        row.Add($"{el.Name} - Index", dataRow.Index.ToString(CultureInfo.InvariantCulture));
-                    }
-
-                    if (row.ContainsKey($"{el.Name} - Time"))
-                    {
-                        row[$"{el.Name} - Time"] = dataRow.Time.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture);
-                    }
-                    else
-                    {
-                        row.Add($"{el.Name} - Time", dataRow.Time.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture));
-                    }
-
-                    if (row.ContainsKey($"{el.Name} - Value"))
-                    {
-                        row[$"{el.Name} - Value"] = Math.Round(dataRow.DataValue, 2).ToString("N2", CultureInfo.InvariantCulture);
-                    }
-                    else
-                    {
-                        row.Add($"{el.Name} - Value", Math.Round(dataRow.DataValue, 2).ToString("N2", CultureInfo.InvariantCulture));
-                    }
-
-                    j++;
-                }
-
-                list.Add(row);
+                row.Add(dataRow.Index.ToString(CultureInfo.InvariantCulture));
+                row.Add(dataRow.Time.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture));
+                row.Add(Math.Round(dataRow.DataValue, 2).ToString("N2", CultureInfo.InvariantCulture));
             }
 
-            return list;
+            dict.Add(i, row);
         }
+
+        return dict;
+    }
+
+    private static Dictionary<int, List<string>> GetValues(List<ResultSetMD> allResults)
+    {
+        Dictionary<int, List<string>> dict = [];
+
+        int count = allResults.FirstOrDefault()?.Result?.Count ?? 0;
+
+        for (int i = 0; i < count; i++)
+        {
+            List<string> row = [];
+
+            foreach (ResultSetMD el in allResults)
+            {
+                MDData dataRow = el.Result.ElementAt(i);
+
+                row.Add(dataRow.Index.ToString(CultureInfo.InvariantCulture));
+                row.Add(dataRow.Time.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture));
+                row.Add($"[{(int)dataRow.DataValue.X};{(int)dataRow.DataValue.Y}]");
+            }
+
+            dict.Add(i, row);
+        }
+
+        return dict;
+    }
+
+    private static Dictionary<int, List<string>> GetValues(List<ResultSetET> allResults)
+    {
+        Dictionary<int, List<string>> dict = [];
+
+        int count = allResults.FirstOrDefault()?.Result?.Count ?? 0;
+
+        for (int i = 0; i < count; i++)
+        {
+            List<string> row = [];
+
+            foreach (ResultSetET el in allResults)
+            {
+                ETData dataRow = el.Result.ElementAt(i);
+
+                row.Add(dataRow.Index.ToString(CultureInfo.InvariantCulture));
+                row.Add(dataRow.Time.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture));
+                row.Add(dataRow.DataValue.ToString());
+            }
+
+            dict.Add(i, row);
+        }
+
+        return dict;
     }
 }

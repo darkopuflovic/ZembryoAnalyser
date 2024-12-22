@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ZembryoAnalyser"
+             d:DataContext="{d:DesignInstance Type=local:MeasureControl}"
              mc:Ignorable="d">
     <Grid>
         <Canvas x:Name="canvas" MouseLeftButtonDown="Canvas_MouseDown" MouseLeftButtonUp="Canvas_MouseUp" MouseRightButtonUp="Canvas_MouseUp" MouseMove="Canvas_MouseMove">

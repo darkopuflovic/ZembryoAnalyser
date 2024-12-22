@@ -4,79 +4,74 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 
-namespace ZembryoAnalyser
+namespace ZembryoAnalyser;
+
+public class SettingsDatabase
 {
-    public class SettingsDatabase
+    private SettingsData data;
+    private readonly DataContractSerializer serializer;
+
+    public SettingsDatabase()
     {
-        private SettingsData data;
-        private readonly DataContractSerializer serializer;
+        data = new SettingsData();
+        serializer = new DataContractSerializer(typeof(SettingsData));
+        Load();
+    }
 
-        public SettingsDatabase()
-        {
-            data = new SettingsData();
-            serializer = new DataContractSerializer(typeof(SettingsData));
-            Load();
-        }
+    private void Save()
+    {
+        using IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForAssembly();
+        using IsolatedStorageFileStream stream = store.OpenFile("settings.xml", FileMode.Create, FileAccess.Write);
+        using XmlDictionaryWriter xdw = XmlDictionaryWriter.CreateTextWriter(stream, Encoding.UTF8);
+        serializer.WriteObject(xdw, data);
+    }
 
-        private void Save()
+    private void Load()
+    {
+        using IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForAssembly();
+        if (store.FileExists("settings.xml"))
         {
-            using IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForAssembly();
-            using IsolatedStorageFileStream stream = store.OpenFile("settings.xml", FileMode.Create, FileAccess.Write);
-            using XmlDictionaryWriter xdw = XmlDictionaryWriter.CreateTextWriter(stream, Encoding.UTF8);
-            serializer.WriteObject(xdw, data);
-        }
+            using IsolatedStorageFileStream stream = store.OpenFile("settings.xml", FileMode.Open, FileAccess.Read);
 
-        private void Load()
-        {
-            using IsolatedStorageFile store = IsolatedStorageFile.GetUserStoreForAssembly();
-            if (store.FileExists("settings.xml"))
+            if (stream.Length > 0)
             {
-                using IsolatedStorageFileStream stream = store.OpenFile("settings.xml", FileMode.Open, FileAccess.Read);
-
-                if (stream.Length > 0)
-                {
-                    using XmlDictionaryReader xdr = XmlDictionaryReader.CreateTextReader(stream, Encoding.UTF8, new XmlDictionaryReaderQuotas(), null);
-                    data = (SettingsData)serializer.ReadObject(xdr);
-                }
+                using XmlDictionaryReader xdr = XmlDictionaryReader.CreateTextReader(stream, Encoding.UTF8, new XmlDictionaryReaderQuotas(), null);
+                data = (SettingsData)serializer.ReadObject(xdr);
             }
         }
+    }
 
-        public void Set(string key, object value)
+    public void Set(string key, object value)
+    {
+        if (!data.Dictionary.TryAdd(key, value))
         {
-            if (data.Dictionary.ContainsKey(key))
-            {
-                data.Dictionary[key] = value;
-            }
-            else
-            {
-                data.Dictionary.Add(key, value);
-            }
-
-            Save();
+            data.Dictionary[key] = value;
         }
 
-        public object Get(string key)
-        {
-            return data.Dictionary.ContainsKey(key) ?
-                   data.Dictionary.TryGetValue(key, out object val) && val != null ?
-                        val : default : default;
-        }
+        Save();
+    }
 
-        public void Remove(string key)
+    public object Get(string key)
+    {
+        return data.Dictionary.ContainsKey(key) ?
+               data.Dictionary.TryGetValue(key, out object val) && val != null ?
+                    val : default : default;
+    }
+
+    public void Remove(string key)
+    {
+        if (data.Dictionary.ContainsKey(key))
         {
-            if (data.Dictionary.ContainsKey(key))
+            if (data.Dictionary.Remove(key))
             {
-                if (data.Dictionary.Remove(key))
-                {
-                    Save();
-                }
+                Save();
             }
         }
+    }
 
-        public void Clear()
-        {
-            data.Dictionary.Clear();
-            Save();
-        }
+    public void Clear()
+    {
+        data.Dictionary.Clear();
+        Save();
     }
 }

@@ -1,8 +1,8 @@
 ﻿namespace ZembryoAnalyser;
 
-public class GridData
+public class JsonDataET
 {
     public int Index { get; set; }
     public string Time { get; set; }
-    public double DataValue { get; set; }
+    public bool Value { get; set; }
 }

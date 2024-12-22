@@ -1,0 +1,33 @@
+﻿<ui:RibbonWindow x:Class="ZembryoAnalyser.RibbonMessageBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ui="clr-namespace:Crystalbyte.Ribbon.UI;assembly=Crystalbyte.Ribbon"
+        xmlns:local="clr-namespace:ZembryoAnalyser"
+        d:DataContext="{d:DesignInstance Type=local:RibbonMessageBox}"
+        mc:Ignorable="d"
+        Title=""
+        ResizeMode="NoResize"
+        SizeToContent="Height"
+        Height="Auto"
+        Width="500"
+        MinWidth="200"
+        MaxWidth="500"
+        RibbonIconVisible="False"
+        IsApplicationIconVisible="False"
+        ShowHelp="False"
+        MinimizeVisible="False"
+        MaximizeVisible="False"
+        QuickAccessBarVisible="False"
+        WindowStartupLocation="CenterOwner"
+        KeyUp="RibbonWindow_KeyUp">
+    <Grid>
+        <ScrollViewer Margin="2,2,2,56" VerticalScrollBarVisibility="Auto">
+            <TextBlock x:Name="message" Padding="20" FontSize="16" TextWrapping="WrapWithOverflow" Text="" />
+        </ScrollViewer>
+        <Border x:Name="buttonsArea" Background="{DynamicResource AccentBrush}" VerticalAlignment="Bottom">
+            <Button Click="Ok_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="80" Height="30" Margin="10" Content="OK" Style="{DynamicResource MessageBoxButtonStyle}" />
+        </Border>
+    </Grid>
+</ui:RibbonWindow>

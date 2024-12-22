@@ -3,14 +3,19 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:Crystalbyte.Ribbon.UI;assembly=Crystalbyte.Ribbon"
         xmlns:local="clr-namespace:ZembryoAnalyser"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        d:DataContext="{d:DesignInstance Type=local:ColorDialog}"
         Title="Pick color"
         Height="520"
-        Width="720"
+        Width="724"
         MinHeight="520"
         MaxHeight="520"
-        MinWidth="720"
-        MaxWidth="720"
+        MinWidth="724"
+        MaxWidth="724"
         ShowHelp="False"
+        IsApplicationIconVisible="True"
         RibbonIconVisible="False"
         MinimizeVisible="False"
         MaximizeVisible="False"
@@ -20,12 +25,12 @@
         KeyUp="RibbonWindow_KeyUp"
         ResizeMode="NoResize"
         Loaded="RibbonWindow_Loaded">
-    <Grid Margin="0,-20,0,0">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="80" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Center" Margin="10,0,10,0">
+        <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Center" Margin="15,0,15,0">
             <GroupBox Header="Theme" FontSize="10" Margin="0,0,7,0">
                 <StackPanel Orientation="Horizontal">
                     <Button Name="light" ToolTip="Light Theme" Height="40" Width="40" Background="#D6DBE9" Style="{StaticResource ColorButtonStyle}" Click="Light_Click" />
@@ -53,8 +58,8 @@
             </GroupBox>
         </StackPanel>
         <Grid Grid.Row="1">
-            <local:ColorPickerControl x:Name="colorPicker" Width="240" Height="385" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="12" Margin="5" />
-            <ListBox Name="colorList" HorizontalAlignment="Right" Width="450" Margin="0,5,15,55" SelectionChanged="ColorList_SelectionChanged">
+            <local:ColorPickerControl x:Name="colorPicker" Margin="15,5,5,5" Width="240" Height="385" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="12" />
+            <ListBox Name="colorList" HorizontalAlignment="Right" Width="440" Margin="0,5,15,55" SelectionChanged="ColorList_SelectionChanged">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Margin="5">
@@ -69,6 +74,6 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </Grid>
-        <Button Grid.Row="1" Content="Set accent color" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="200" Margin="10" Click="Button_Click" />
+        <Button Grid.Row="1" Content="Set accent color" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="190" Margin="10" Click="Button_Click" />
     </Grid>
 </ui:RibbonWindow>

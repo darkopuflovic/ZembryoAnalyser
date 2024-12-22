@@ -6,270 +6,550 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace ZembryoAnalyser
+namespace ZembryoAnalyser;
+
+public static class ExcelExport
 {
-    public static class ExcelExport
+    public static void ExportXLSX(string fileName, List<ResultSetHR> data)
     {
-        public static void ExportXLSX(string fileName, List<ResultSet> data)
+        using SpreadsheetDocument excel = SpreadsheetDocument.Create(fileName, SpreadsheetDocumentType.Workbook);
+
+        WorkbookPart part = excel.AddWorkbookPart();
+
+        _ = AddStyleSheet(excel);
+
+        List<WorksheetPart> listWorksheetParts = [];
+        WorksheetPart worksheetPart = default;
+
+        for (int k = 0; k < data.Count; k++)
         {
-            using SpreadsheetDocument excel = SpreadsheetDocument.Create(fileName, SpreadsheetDocumentType.Workbook);
+            List<HRData> results = data.ElementAt(k).Result;
 
-            WorkbookPart part = excel.AddWorkbookPart();
+            worksheetPart = excel.WorkbookPart.AddNewPart<WorksheetPart>();
 
-            _ = AddStyleSheet(excel);
+            listWorksheetParts.Add(worksheetPart);
 
-            List<WorksheetPart> listWorksheetParts = new();
-            WorksheetPart worksheetPart = default;
+            Worksheet worksheet = new();
 
-            for (int k = 0; k < data.Count; k++)
+            Columns columns = new();
+
+            Column firstColumn = new()
             {
-                List<Data> results = data.ElementAt(k).Result;
+                Min = 1,
+                Max = 1,
+                Width = 10,
+                CustomWidth = true
+            };
 
-                worksheetPart = excel.WorkbookPart.AddNewPart<WorksheetPart>();
+            Column secondColumn = new()
+            {
+                Min = 2,
+                Max = 2,
+                Width = 20,
+                CustomWidth = true
+            };
 
-                listWorksheetParts.Add(worksheetPart);
+            Column thirdColumn = new()
+            {
+                Min = 3,
+                Max = 3,
+                Width = 15,
+                CustomWidth = true
+            };
 
-                Worksheet worksheet = new();
+            columns.Append(firstColumn);
+            columns.Append(secondColumn);
+            columns.Append(thirdColumn);
 
-                Columns columns = new();
+            worksheet.Append(columns);
 
-                Column firstColumn = new()
-                {
-                    Min = 1,
-                    Max = 1,
-                    Width = 10,
-                    CustomWidth = true
-                };
+            SheetData sheetData = new();
 
-                Column secondColumn = new()
-                {
-                    Min = 2,
-                    Max = 2,
-                    Width = 20,
-                    CustomWidth = true
-                };
+            Row row = new();
 
-                Column thirdColumn = new()
-                {
-                    Min = 3,
-                    Max = 3,
-                    Width = 15,
-                    CustomWidth = true
-                };
+            row.Append(new Cell
+            {
+                DataType = CellValues.String,
+                CellReference = $"A1",
+                CellValue = new CellValue("Index"),
+                StyleIndex = 1
+            });
 
-                columns.Append(firstColumn);
-                columns.Append(secondColumn);
-                columns.Append(thirdColumn);
+            row.Append(new Cell
+            {
+                DataType = CellValues.String,
+                CellReference = $"B1",
+                CellValue = new CellValue("Time"),
+                StyleIndex = 1
+            });
 
-                worksheet.Append(columns);
+            row.Append(new Cell
+            {
+                DataType = CellValues.String,
+                CellReference = $"C1",
+                CellValue = new CellValue("Value"),
+                StyleIndex = 1
+            });
 
-                SheetData sheetData = new();
+            sheetData.Append(row);
 
-                Row row = new();
+            foreach (HRData result in results)
+            {
+                row = new Row();
 
                 row.Append(new Cell
                 {
                     DataType = CellValues.String,
-                    CellReference = $"A1",
-                    CellValue = new CellValue("Index"),
-                    StyleIndex = 1
+                    CellReference = $"A{result.Index + 1}",
+                    CellValue = new CellValue(result.Index.ToString(CultureInfo.InvariantCulture)),
+                    StyleIndex = 0
                 });
 
                 row.Append(new Cell
                 {
                     DataType = CellValues.String,
-                    CellReference = $"B1",
-                    CellValue = new CellValue("Time"),
-                    StyleIndex = 1
+                    CellReference = $"B{result.Index + 1}",
+                    CellValue = new CellValue(result.Time.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture)),
+                    StyleIndex = 0
                 });
 
                 row.Append(new Cell
                 {
                     DataType = CellValues.String,
-                    CellReference = $"C1",
-                    CellValue = new CellValue("Value"),
-                    StyleIndex = 1
+                    CellReference = $"C{result.Index + 1}",
+                    CellValue = new CellValue(Math.Round(result.DataValue, 2).ToString("N2", CultureInfo.InvariantCulture)),
+                    StyleIndex = 0
                 });
 
                 sheetData.Append(row);
-
-                foreach (Data result in results)
-                {
-                    row = new Row();
-
-                    row.Append(new Cell
-                    {
-                        DataType = CellValues.String,
-                        CellReference = $"A{result.Index + 1}",
-                        CellValue = new CellValue(result.Index.ToString(CultureInfo.InvariantCulture)),
-                        StyleIndex = 0
-                    });
-
-                    row.Append(new Cell
-                    {
-                        DataType = CellValues.String,
-                        CellReference = $"B{result.Index + 1}",
-                        CellValue = new CellValue(result.Time.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture)),
-                        StyleIndex = 0
-                    });
-
-                    row.Append(new Cell
-                    {
-                        DataType = CellValues.String,
-                        CellReference = $"C{result.Index + 1}",
-                        CellValue = new CellValue(Math.Round(result.DataValue, 2).ToString("N2", CultureInfo.InvariantCulture)),
-                        StyleIndex = 0
-                    });
-
-                    sheetData.Append(row);
-                }
-
-                worksheet.Append(sheetData);
-
-                worksheetPart.Worksheet = worksheet;
-                worksheetPart.Worksheet.Save();
             }
 
-            OpenXmlWriter openXMLWriter = OpenXmlWriter.Create(excel.WorkbookPart);
+            worksheet.Append(sheetData);
 
-            openXMLWriter.WriteStartElement(new Workbook());
-            openXMLWriter.WriteStartElement(new Sheets());
-
-            for (int i = 0; i < data.Count; i++)
-            {
-                openXMLWriter.WriteElement(new Sheet()
-                {
-                    Name = data.ElementAt(i).Name,
-                    SheetId = UInt32Value.FromUInt32((uint)i + 1),
-                    Id = excel.WorkbookPart.GetIdOfPart(listWorksheetParts.ElementAt(i))
-                });
-            }
-
-            openXMLWriter.WriteEndElement();
-            openXMLWriter.WriteEndElement();
-
-            openXMLWriter.Close();
-            excel.Close();
+            worksheetPart.Worksheet = worksheet;
+            worksheetPart.Worksheet.Save();
         }
 
-        private static WorkbookStylesPart AddStyleSheet(SpreadsheetDocument spreadsheet)
-        {
-            WorkbookStylesPart stylesheet = spreadsheet.WorkbookPart.AddNewPart<WorkbookStylesPart>();
-            Stylesheet workbookstylesheet = new();
+        OpenXmlWriter openXMLWriter = OpenXmlWriter.Create(excel.WorkbookPart);
 
-            Font regularFont = new()
+        openXMLWriter.WriteStartElement(new Workbook());
+        openXMLWriter.WriteStartElement(new Sheets());
+
+        for (int i = 0; i < data.Count; i++)
+        {
+            openXMLWriter.WriteElement(new Sheet()
             {
-                FontSize = new FontSize
-                {
-                    Val = 16
-                }
+                Name = data.ElementAt(i).Name,
+                SheetId = UInt32Value.FromUInt32((uint)i + 1),
+                Id = excel.WorkbookPart.GetIdOfPart(listWorksheetParts.ElementAt(i))
+            });
+        }
+
+        openXMLWriter.WriteEndElement();
+        openXMLWriter.WriteEndElement();
+
+        openXMLWriter.Close();
+    }
+
+    public static void ExportXLSX(string fileName, List<ResultSetMD> data)
+    {
+        using SpreadsheetDocument excel = SpreadsheetDocument.Create(fileName, SpreadsheetDocumentType.Workbook);
+
+        WorkbookPart part = excel.AddWorkbookPart();
+
+        _ = AddStyleSheet(excel);
+
+        List<WorksheetPart> listWorksheetParts = [];
+        WorksheetPart worksheetPart = default;
+
+        for (int k = 0; k < data.Count; k++)
+        {
+            List<MDData> results = data.ElementAt(k).Result;
+
+            worksheetPart = excel.WorkbookPart.AddNewPart<WorksheetPart>();
+
+            listWorksheetParts.Add(worksheetPart);
+
+            Worksheet worksheet = new();
+
+            Columns columns = new();
+
+            Column firstColumn = new()
+            {
+                Min = 1,
+                Max = 1,
+                Width = 10,
+                CustomWidth = true
             };
 
-            Font headerFont = new()
+            Column secondColumn = new()
             {
-                Bold = new Bold(),
+                Min = 2,
+                Max = 2,
+                Width = 20,
+                CustomWidth = true
+            };
+
+            Column thirdColumn = new()
+            {
+                Min = 3,
+                Max = 3,
+                Width = 15,
+                CustomWidth = true
+            };
+
+            columns.Append(firstColumn);
+            columns.Append(secondColumn);
+            columns.Append(thirdColumn);
+
+            worksheet.Append(columns);
+
+            SheetData sheetData = new();
+
+            Row row = new();
+
+            row.Append(new Cell
+            {
+                DataType = CellValues.String,
+                CellReference = $"A1",
+                CellValue = new CellValue("Index"),
+                StyleIndex = 1
+            });
+
+            row.Append(new Cell
+            {
+                DataType = CellValues.String,
+                CellReference = $"B1",
+                CellValue = new CellValue("Time"),
+                StyleIndex = 1
+            });
+
+            row.Append(new Cell
+            {
+                DataType = CellValues.String,
+                CellReference = $"C1",
+                CellValue = new CellValue("Value"),
+                StyleIndex = 1
+            });
+
+            sheetData.Append(row);
+
+            foreach (MDData result in results)
+            {
+                row = new Row();
+
+                row.Append(new Cell
+                {
+                    DataType = CellValues.String,
+                    CellReference = $"A{result.Index + 1}",
+                    CellValue = new CellValue(result.Index.ToString(CultureInfo.InvariantCulture)),
+                    StyleIndex = 0
+                });
+
+                row.Append(new Cell
+                {
+                    DataType = CellValues.String,
+                    CellReference = $"B{result.Index + 1}",
+                    CellValue = new CellValue(result.Time.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture)),
+                    StyleIndex = 0
+                });
+
+                row.Append(new Cell
+                {
+                    DataType = CellValues.String,
+                    CellReference = $"C{result.Index + 1}",
+                    CellValue = new CellValue($"[{(int)result.DataValue.X}, {(int)result.DataValue.Y}]"),
+                    StyleIndex = 0
+                });
+
+                sheetData.Append(row);
+            }
+
+            worksheet.Append(sheetData);
+
+            worksheetPart.Worksheet = worksheet;
+            worksheetPart.Worksheet.Save();
+        }
+
+        OpenXmlWriter openXMLWriter = OpenXmlWriter.Create(excel.WorkbookPart);
+
+        openXMLWriter.WriteStartElement(new Workbook());
+        openXMLWriter.WriteStartElement(new Sheets());
+
+        for (int i = 0; i < data.Count; i++)
+        {
+            openXMLWriter.WriteElement(new Sheet()
+            {
+                Name = data.ElementAt(i).Name,
+                SheetId = UInt32Value.FromUInt32((uint)i + 1),
+                Id = excel.WorkbookPart.GetIdOfPart(listWorksheetParts.ElementAt(i))
+            });
+        }
+
+        openXMLWriter.WriteEndElement();
+        openXMLWriter.WriteEndElement();
+
+        openXMLWriter.Close();
+    }
+
+    public static void ExportXLSX(string fileName, List<ResultSetET> data)
+    {
+        using SpreadsheetDocument excel = SpreadsheetDocument.Create(fileName, SpreadsheetDocumentType.Workbook);
+
+        WorkbookPart part = excel.AddWorkbookPart();
+
+        _ = AddStyleSheet(excel);
+
+        List<WorksheetPart> listWorksheetParts = [];
+        WorksheetPart worksheetPart = default;
+
+        for (int k = 0; k < data.Count; k++)
+        {
+            List<ETData> results = data.ElementAt(k).Result;
+
+            worksheetPart = excel.WorkbookPart.AddNewPart<WorksheetPart>();
+
+            listWorksheetParts.Add(worksheetPart);
+
+            Worksheet worksheet = new();
+
+            Columns columns = new();
+
+            Column firstColumn = new()
+            {
+                Min = 1,
+                Max = 1,
+                Width = 10,
+                CustomWidth = true
+            };
+
+            Column secondColumn = new()
+            {
+                Min = 2,
+                Max = 2,
+                Width = 20,
+                CustomWidth = true
+            };
+
+            Column thirdColumn = new()
+            {
+                Min = 3,
+                Max = 3,
+                Width = 15,
+                CustomWidth = true
+            };
+
+            columns.Append(firstColumn);
+            columns.Append(secondColumn);
+            columns.Append(thirdColumn);
+
+            worksheet.Append(columns);
+
+            SheetData sheetData = new();
+
+            Row row = new();
+
+            row.Append(new Cell
+            {
+                DataType = CellValues.String,
+                CellReference = $"A1",
+                CellValue = new CellValue("Index"),
+                StyleIndex = 1
+            });
+
+            row.Append(new Cell
+            {
+                DataType = CellValues.String,
+                CellReference = $"B1",
+                CellValue = new CellValue("Time"),
+                StyleIndex = 1
+            });
+
+            row.Append(new Cell
+            {
+                DataType = CellValues.String,
+                CellReference = $"C1",
+                CellValue = new CellValue("Value"),
+                StyleIndex = 1
+            });
+
+            sheetData.Append(row);
+
+            foreach (ETData result in results)
+            {
+                row = new Row();
+
+                row.Append(new Cell
+                {
+                    DataType = CellValues.String,
+                    CellReference = $"A{result.Index + 1}",
+                    CellValue = new CellValue(result.Index.ToString(CultureInfo.InvariantCulture)),
+                    StyleIndex = 0
+                });
+
+                row.Append(new Cell
+                {
+                    DataType = CellValues.String,
+                    CellReference = $"B{result.Index + 1}",
+                    CellValue = new CellValue(result.Time.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture)),
+                    StyleIndex = 0
+                });
+
+                row.Append(new Cell
+                {
+                    DataType = CellValues.String,
+                    CellReference = $"C{result.Index + 1}",
+                    CellValue = new CellValue(result.DataValue),
+                    StyleIndex = 0
+                });
+
+                sheetData.Append(row);
+            }
+
+            worksheet.Append(sheetData);
+
+            worksheetPart.Worksheet = worksheet;
+            worksheetPart.Worksheet.Save();
+        }
+
+        OpenXmlWriter openXMLWriter = OpenXmlWriter.Create(excel.WorkbookPart);
+
+        openXMLWriter.WriteStartElement(new Workbook());
+        openXMLWriter.WriteStartElement(new Sheets());
+
+        for (int i = 0; i < data.Count; i++)
+        {
+            openXMLWriter.WriteElement(new Sheet()
+            {
+                Name = data.ElementAt(i).Name,
+                SheetId = UInt32Value.FromUInt32((uint)i + 1),
+                Id = excel.WorkbookPart.GetIdOfPart(listWorksheetParts.ElementAt(i))
+            });
+        }
+
+        openXMLWriter.WriteEndElement();
+        openXMLWriter.WriteEndElement();
+
+        openXMLWriter.Close();
+    }
+
+    private static WorkbookStylesPart AddStyleSheet(SpreadsheetDocument spreadsheet)
+    {
+        WorkbookStylesPart stylesheet = spreadsheet.WorkbookPart.AddNewPart<WorkbookStylesPart>();
+        Stylesheet workbookstylesheet = new();
+
+        Font regularFont = new()
+        {
+            FontSize = new FontSize
+            {
+                Val = 16
+            }
+        };
+
+        Font headerFont = new()
+        {
+            Bold = new Bold(),
+            Color = new Color
+            {
+                Rgb = "FF800000"
+            },
+            FontSize = new FontSize
+            {
+                Val = 16
+            }
+        };
+
+        Fonts fonts = new();
+
+        fonts.Append(regularFont);
+        fonts.Append(headerFont);
+
+        Fill regularFill = new(new PatternFill { PatternType = PatternValues.None });
+        Fill gray125 = new(new PatternFill { PatternType = PatternValues.Gray125 });
+        Fill headerFill = new()
+        {
+            PatternFill = new PatternFill
+            {
+                PatternType = PatternValues.Solid,
+                ForegroundColor = new ForegroundColor { Rgb = new HexBinaryValue { Value = "FFFFCC99" } },
+                BackgroundColor = new BackgroundColor { Indexed = 64U }
+            }
+        };
+
+        Fills fills = new();
+
+        fills.Append(regularFill);
+        fills.Append(gray125);
+        fills.Append(headerFill);
+
+        Border regularBorder = new();
+        Border headerBorder = new()
+        {
+            BottomBorder = new BottomBorder
+            {
+                Style = BorderStyleValues.Thin,
                 Color = new Color
                 {
-                    Rgb = "FF800000"
-                },
-                FontSize = new FontSize
-                {
-                    Val = 16
+                    Rgb = "FF8a4500"
                 }
-            };
-
-            Fonts fonts = new();
-
-            fonts.Append(regularFont);
-            fonts.Append(headerFont);
-
-            Fill regularFill = new(new PatternFill { PatternType = PatternValues.None });
-            Fill gray125 = new(new PatternFill { PatternType = PatternValues.Gray125 });
-            Fill headerFill = new()
+            },
+            TopBorder = new TopBorder
             {
-                PatternFill = new PatternFill
+                Style = BorderStyleValues.Thin,
+                Color = new Color
                 {
-                    PatternType = PatternValues.Solid,
-                    ForegroundColor = new ForegroundColor { Rgb = new HexBinaryValue { Value = "FFFFCC99" } },
-                    BackgroundColor = new BackgroundColor { Indexed = 64U }
+                    Rgb = "FF8a4500"
                 }
-            };
-
-            Fills fills = new();
-
-            fills.Append(regularFill);
-            fills.Append(gray125);
-            fills.Append(headerFill);
-
-            Border regularBorder = new();
-            Border headerBorder = new()
+            },
+            LeftBorder = new LeftBorder
             {
-                BottomBorder = new BottomBorder
+                Style = BorderStyleValues.Thin,
+                Color = new Color
                 {
-                    Style = BorderStyleValues.Thin,
-                    Color = new Color
-                    {
-                        Rgb = "FF8a4500"
-                    }
-                },
-                TopBorder = new TopBorder
-                {
-                    Style = BorderStyleValues.Thin,
-                    Color = new Color
-                    {
-                        Rgb = "FF8a4500"
-                    }
-                },
-                LeftBorder = new LeftBorder
-                {
-                    Style = BorderStyleValues.Thin,
-                    Color = new Color
-                    {
-                        Rgb = "FF8a4500"
-                    }
-                },
-                RightBorder = new RightBorder
-                {
-                    Style = BorderStyleValues.Thin,
-                    Color = new Color
-                    {
-                        Rgb = "FF8a4500"
-                    }
+                    Rgb = "FF8a4500"
                 }
-            };
-
-            Borders borders = new();
-
-            borders.Append(regularBorder);
-            borders.Append(headerBorder);
-
-            CellFormat regularFormat = new()
+            },
+            RightBorder = new RightBorder
             {
-                FontId = 0,
-                FillId = 0,
-                BorderId = 0
-            };
+                Style = BorderStyleValues.Thin,
+                Color = new Color
+                {
+                    Rgb = "FF8a4500"
+                }
+            }
+        };
 
-            CellFormat headerFormat = new()
-            {
-                FontId = 1,
-                FillId = 2,
-                BorderId = 1
-            };
+        Borders borders = new();
 
-            CellFormats cellformats = new();
-            cellformats.Append(regularFormat);
-            cellformats.Append(headerFormat);
+        borders.Append(regularBorder);
+        borders.Append(headerBorder);
 
-            workbookstylesheet.Append(fonts);
-            workbookstylesheet.Append(fills);
-            workbookstylesheet.Append(borders);
-            workbookstylesheet.Append(cellformats);
+        CellFormat regularFormat = new()
+        {
+            FontId = 0,
+            FillId = 0,
+            BorderId = 0
+        };
 
-            stylesheet.Stylesheet = workbookstylesheet;
-            stylesheet.Stylesheet.Save();
+        CellFormat headerFormat = new()
+        {
+            FontId = 1,
+            FillId = 2,
+            BorderId = 1
+        };
 
-            return stylesheet;
-        }
+        CellFormats cellformats = new();
+        cellformats.Append(regularFormat);
+        cellformats.Append(headerFormat);
+
+        workbookstylesheet.Append(fonts);
+        workbookstylesheet.Append(fills);
+        workbookstylesheet.Append(borders);
+        workbookstylesheet.Append(cellformats);
+
+        stylesheet.Stylesheet = workbookstylesheet;
+        stylesheet.Stylesheet.Save();
+
+        return stylesheet;
     }
 }

@@ -1,23 +1,22 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
-namespace ZembryoAnalyser
+namespace ZembryoAnalyser;
+
+internal static partial class Interop
 {
-    internal static class Interop
-    {
-        [DllImport("Dwmapi.dll")]
-        internal static extern int DwmIsCompositionEnabled([MarshalAs(UnmanagedType.Bool)] out bool pfEnabled);
+    [LibraryImport("Dwmapi.dll", EntryPoint = "DwmIsCompositionEnabled")]
+    internal static partial int DwmIsCompositionEnabled([MarshalAs(UnmanagedType.Bool)] out bool pfEnabled);
 
-        [DllImport("Dwmapi.dll", EntryPoint = "#127")]
-        internal static extern int DwmGetColorizationParameters(out DwmColorizationParams parameters);
+    [LibraryImport("Dwmapi.dll", EntryPoint = "#127")]
+    internal static partial int DwmGetColorizationParameters(out DwmColorizationParams parameters);
 
-        [DllImport("uxtheme.dll", EntryPoint = "#132")]
-        internal static extern uint ShouldAppsUseDarkMode();
+    [LibraryImport("uxtheme.dll", EntryPoint = "#132")]
+    internal static partial uint ShouldAppsUseDarkMode();
 
-        [DllImport("uxtheme.dll", EntryPoint = "#138")]
-        internal static extern uint ShouldSystemUseDarkMode();
+    [LibraryImport("uxtheme.dll", EntryPoint = "#138")]
+    internal static partial uint ShouldSystemUseDarkMode();
 
-        [DllImport("gdi32.dll")]
-        internal static extern bool DeleteObject(IntPtr hObject);
-    }
+    [LibraryImport("gdi32.dll", EntryPoint = "DeleteObject")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static partial bool DeleteObject(nint hObject);
 }

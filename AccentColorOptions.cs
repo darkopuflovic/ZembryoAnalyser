@@ -1,8 +1,7 @@
-﻿namespace ZembryoAnalyser
+﻿namespace ZembryoAnalyser;
+
+public enum AccentColorOptions
 {
-    public enum AccentColorOptions
-    {
-        AccentColor,
-        Color
-    }
+    AccentColor,
+    Color
 }

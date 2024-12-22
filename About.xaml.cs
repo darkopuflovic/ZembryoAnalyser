@@ -6,44 +6,43 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Navigation;
 
-namespace ZembryoAnalyser
+namespace ZembryoAnalyser;
+
+/// <summary>
+/// Interaction logic for About.xaml
+/// </summary>
+public partial class About : RibbonWindow
 {
-    /// <summary>
-    /// Interaction logic for About.xaml
-    /// </summary>
-    public partial class About : RibbonWindow
+    public string Year { get; set; }
+
+    public About()
     {
-        public string Year { get; set; }
+        Year = $"2019-{DateTime.Now.Year}.";
+        InitializeComponent();
+    }
 
-        public About()
-        {
-            Year = $"2019-{DateTime.Now.Year}.";
-            InitializeComponent();
-        }
+    protected override void OnSourceInitialized(EventArgs e)
+    {
+        base.OnSourceInitialized(e);
+        SetWindowStyles(PresentationSource.FromVisual(this) as HwndSource);
+    }
 
-        protected override void OnSourceInitialized(EventArgs e)
+    private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+    {
+        ProcessStartInfo info = new(e.Uri.AbsoluteUri)
         {
-            base.OnSourceInitialized(e);
-            SetWindowStyles(PresentationSource.FromVisual(this) as HwndSource);
-        }
+            UseShellExecute = true
+        };
+        using Process _ = Process.Start(info);
+        e.Handled = true;
+    }
 
-        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+    private void RibbonWindow_KeyUp(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Escape)
         {
-            ProcessStartInfo info = new(e.Uri.AbsoluteUri)
-            {
-                UseShellExecute = true
-            };
-            using Process _ = Process.Start(info);
             e.Handled = true;
-        }
-
-        private void RibbonWindow_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape)
-            {
-                e.Handled = true;
-                Close();
-            }
+            Close();
         }
     }
 }

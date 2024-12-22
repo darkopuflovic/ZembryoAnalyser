@@ -1,12 +1,12 @@
-﻿namespace ZembryoAnalyser
+﻿namespace ZembryoAnalyser;
+
+public enum GeometryType
 {
-    public enum GeometryType
-    {
-        Ellipse,
-        Rectangle,
-        Polygon,
-        Erase,
-        Edit,
-        None
-    }
+    Ellipse,
+    Rectangle,
+    Polygon,
+    Erase,
+    Edit,
+    Info,
+    None
 }

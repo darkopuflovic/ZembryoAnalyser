@@ -1,13 +1,12 @@
-﻿namespace ZembryoAnalyser
+﻿namespace ZembryoAnalyser;
+
+public enum MeasureType
 {
-    public enum MeasureType
-    {
-        Line,
-        Polyline,
-        Rectangle,
-        Ellipse,
-        Polygon,
-        Angle,
-        None
-    }
+    Line,
+    Polyline,
+    Rectangle,
+    Ellipse,
+    Polygon,
+    Angle,
+    None
 }

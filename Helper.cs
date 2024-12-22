@@ -1,32 +1,31 @@
 ﻿using System.Windows;
 using System.Windows.Media;
 
-namespace ZembryoAnalyser
+namespace ZembryoAnalyser;
+
+public static class Helper
 {
-    public static class Helper
+    public static T FindVisualChild<T>(DependencyObject obj) where T : DependencyObject
     {
-        public static T FindVisualChild<T>(DependencyObject obj) where T : DependencyObject
+        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
         {
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
+            DependencyObject child = VisualTreeHelper.GetChild(obj, i);
+
+            if (child is not null and T item)
             {
-                DependencyObject child = VisualTreeHelper.GetChild(obj, i);
+                return item;
+            }
+            else
+            {
+                T childOfChild = FindVisualChild<T>(child);
 
-                if (child is not null and T item)
+                if (childOfChild != null)
                 {
-                    return item;
-                }
-                else
-                {
-                    T childOfChild = FindVisualChild<T>(child);
-
-                    if (childOfChild != null)
-                    {
-                        return childOfChild;
-                    }
+                    return childOfChild;
                 }
             }
-
-            return null;
         }
+
+        return null;
     }
 }
