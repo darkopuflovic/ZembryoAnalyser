@@ -753,47 +753,51 @@ public partial class MainWindow : RibbonWindow
 
     public void PlotColors()
     {
-        if (plot?.Model == null)
-        {
-            return;
-        }
-
         Media.Color backColor = Background is SolidColorBrush backBrush ? backBrush.Color : Colors.White;
         Media.Color foreColor = Foreground is SolidColorBrush foreBrush ? foreBrush.Color : Colors.Black;
 
         OxyColor foreOxy = OxyColor.FromArgb(96, foreColor.R, foreColor.G, foreColor.B);
 
-        plot.Model.Background = OxyColor.FromRgb(backColor.R, backColor.G, backColor.B);
-        plot.Model.TextColor = OxyColor.FromRgb(foreColor.R, foreColor.G, foreColor.B);
-        plot.Model.Legends.ToList().ForEach(p => p.LegendBorder = foreOxy);
-        plot.Model.PlotAreaBorderColor = foreOxy;
-
-        mdPlot.Model.Background = OxyColor.FromRgb(backColor.R, backColor.G, backColor.B);
-        mdPlot.Model.TextColor = OxyColor.FromRgb(foreColor.R, foreColor.G, foreColor.B);
-        mdPlot.Model.Legends.ToList().ForEach(p => p.LegendBorder = foreOxy);
-        mdPlot.Model.PlotAreaBorderColor = foreOxy;
-
-        etPlot.Model.Background = OxyColor.FromRgb(backColor.R, backColor.G, backColor.B);
-        etPlot.Model.TextColor = OxyColor.FromRgb(foreColor.R, foreColor.G, foreColor.B);
-        etPlot.Model.Legends.ToList().ForEach(p => p.LegendBorder = foreOxy);
-        etPlot.Model.PlotAreaBorderColor = foreOxy;
-
-        foreach (LinearAxis l in plot.Model.Axes.Cast<LinearAxis>())
+        if (plot?.Model != null)
         {
-            l.MinorTicklineColor = foreOxy;
-            l.TicklineColor = foreOxy;
+            plot.Model.Background = OxyColor.FromRgb(backColor.R, backColor.G, backColor.B);
+            plot.Model.TextColor = OxyColor.FromRgb(foreColor.R, foreColor.G, foreColor.B);
+            plot.Model.Legends.ToList().ForEach(p => p.LegendBorder = foreOxy);
+            plot.Model.PlotAreaBorderColor = foreOxy;
+
+            foreach (LinearAxis l in plot.Model.Axes.Cast<LinearAxis>())
+            {
+                l.MinorTicklineColor = foreOxy;
+                l.TicklineColor = foreOxy;
+            }
         }
 
-        foreach (LinearAxis l in mdPlot.Model.Axes.Cast<LinearAxis>())
+        if (mdPlot?.Model != null)
         {
-            l.MinorTicklineColor = foreOxy;
-            l.TicklineColor = foreOxy;
+            mdPlot.Model.Background = OxyColor.FromRgb(backColor.R, backColor.G, backColor.B);
+            mdPlot.Model.TextColor = OxyColor.FromRgb(foreColor.R, foreColor.G, foreColor.B);
+            mdPlot.Model.Legends.ToList().ForEach(p => p.LegendBorder = foreOxy);
+            mdPlot.Model.PlotAreaBorderColor = foreOxy;
+
+            foreach (LinearAxis l in mdPlot.Model.Axes.Cast<LinearAxis>())
+            {
+                l.MinorTicklineColor = foreOxy;
+                l.TicklineColor = foreOxy;
+            }
         }
 
-        foreach (LinearAxis l in etPlot.Model.Axes.Cast<LinearAxis>())
+        if (etPlot?.Model != null)
         {
-            l.MinorTicklineColor = foreOxy;
-            l.TicklineColor = foreOxy;
+            etPlot.Model.Background = OxyColor.FromRgb(backColor.R, backColor.G, backColor.B);
+            etPlot.Model.TextColor = OxyColor.FromRgb(foreColor.R, foreColor.G, foreColor.B);
+            etPlot.Model.Legends.ToList().ForEach(p => p.LegendBorder = foreOxy);
+            etPlot.Model.PlotAreaBorderColor = foreOxy;
+
+            foreach (LinearAxis l in etPlot.Model.Axes.Cast<LinearAxis>())
+            {
+                l.MinorTicklineColor = foreOxy;
+                l.TicklineColor = foreOxy;
+            }
         }
 
         PlotRefresh();
