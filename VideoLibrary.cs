@@ -899,7 +899,7 @@ public static class VideoLibrary
             trackers.Add(
             (
                 tracker,
-                [(false, lastVideo.PosMsec)],
+                [],
                 bbox,
                 color
             ));
