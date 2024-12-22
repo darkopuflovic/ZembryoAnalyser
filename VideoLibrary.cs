@@ -629,9 +629,11 @@ public static class VideoLibrary
         int current = 0;
 
         int skipFrames = 1;
+        bool sfiv = false;
 
         main.InvokeAction(() =>
         {
+            sfiv = main.skipFramesInVideo.IsChecked == true;
             skipFrames = main.mdSkipFrames.SelectedIndex + 2;
             main.SetStatusProgressMaximumValue(lastVideo.FrameCount / lastVideo.Fps * 1000);
         });
@@ -727,9 +729,17 @@ public static class VideoLibrary
                 main.timeText.Text = $"{TimeSpan.FromMilliseconds(lastVideo.PosMsec).ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture)}/{TimeSpan.FromSeconds(lastVideo.FrameCount / lastVideo.Fps).ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture)}";
                 main.slika.Source = bitmapSource;
             });
+
+            if (sfiv)
+            {
+                for (int i = 1; i < skipFrames; i++)
+                {
+                    lastVideo.Grab();
+                }
+            }
         }
 
-        result.AddRange(trackers.Select(p => p.results.Where((p, i) => i % skipFrames == 0).ToList()));
+        result.AddRange(trackers.Select(p => p.results.Where((p, i) => sfiv || i % skipFrames == 0).ToList()));
         
         lastVideo.PosFrames = 0;
         image.Release();
@@ -829,26 +839,44 @@ public static class VideoLibrary
         return contourList.OrderBy(p => Cv2.ContourArea(p)).FirstOrDefault();
     }
 
-    private static bool Closer(DrawingPoint dp, List<DrawingPoint> edgeContour, int minDistance)
+    private static (bool closer, double minimalDistance) Closer(DrawingPoint dp, List<DrawingPoint> edgeContour, int minDistance, bool md)
     {
+        double minimalDistance = double.PositiveInfinity;
+        bool closer = false;
+
         foreach (var contour in edgeContour)
         {
             double distance = Math.Sqrt(Math.Pow(contour.X - dp.X, 2) + Math.Pow(contour.Y - dp.Y, 2));
 
-            if (distance < minDistance)
+            if (md)
             {
-                return true;
+                if (distance < minimalDistance)
+                {
+                    minimalDistance = distance;
+                }
+            }
+            else
+            {
+                if (distance < minDistance)
+                {
+                    return (true, double.PositiveInfinity);
+                }
             }
         }
 
-        return false;
+        if (md && minimalDistance < minDistance)
+        {
+            closer = true;
+        }
+
+        return (closer, minimalDistance);
     }
 
-    public static List<List<(bool closer, int mSec)>> GetEdgeResults(string videoFileName, List<Shape> shapes, List<DrawingPoint> edgeContour, MainWindow main)
+    public static List<List<(bool closer, double minimalDistance, int mSec)>> GetEdgeResults(string videoFileName, List<Shape> shapes, List<DrawingPoint> edgeContour, bool minimalDistance, int? skipFrames, MainWindow main)
     {
         OpenVideo(videoFileName);
 
-        List<List<(bool closer, int mSec)>> result = [];
+        List<List<(bool closer, double minimalDistance, int mSec)>> result = [];
         lastVideo.PosFrames = 0;
 
         if (shapes.Count <= 0)
@@ -856,7 +884,7 @@ public static class VideoLibrary
             return result;
         }
 
-        List<(Tracker tracker, List<(bool closer, int mSec)> results, Rect bbox, Scalar color)> trackers = [];
+        List<(Tracker tracker, List<(bool closer, double minimalDistance, int mSec)> results, Rect bbox, Scalar color)> trackers = [];
 
         using Mat image = new();
         using Mat tempImage = new();
@@ -932,14 +960,14 @@ public static class VideoLibrary
 
             current++;
 
-            foreach ((Tracker tracker, List<(bool closer, int mSec)> points, Rect boundingBox, Scalar boxColor) in trackers)
+            foreach ((Tracker tracker, List<(bool closer, double minimalDistance, int mSec)> points, Rect boundingBox, Scalar boxColor) in trackers)
             {
                 tracker.Update(image, ref detectedBoundingBox);
 
                 DrawingPoint newLocation = new(detectedBoundingBox.X + detectedBoundingBox.Width / 2, detectedBoundingBox.Y + detectedBoundingBox.Height / 2);
 
-                bool closer = Closer(newLocation, edgeContour, closerThreshold);
-                points.Add((closer, lastVideo.PosMsec));
+                (bool closer, double minimalDistanceValue) = Closer(newLocation, edgeContour, closerThreshold, minimalDistance);
+                points.Add((closer, minimalDistanceValue, lastVideo.PosMsec));
 
                 Cv2.Rectangle(tempImage, detectedBoundingBox, closer ? Scalar.Red : boxColor, (int)(2 * Scale));
             }
@@ -964,6 +992,14 @@ public static class VideoLibrary
                 main.timeText.Text = $"{TimeSpan.FromMilliseconds(lastVideo.PosMsec).ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture)}/{TimeSpan.FromSeconds(lastVideo.FrameCount / lastVideo.Fps).ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture)}";
                 main.slika.Source = bitmapSource;
             });
+
+            if (skipFrames != null)
+            {
+                for (int i = 0; i < skipFrames; i++)
+                {
+                    lastVideo.Grab();
+                }
+            }
         }
 
         result.AddRange(trackers.Select(p => p.results));

@@ -39,119 +39,143 @@
     <ui:RibbonWindow.ApplicationMenu>
         <ui:ApplicationMenu>
             <ui:ApplicationMenuItem Header="Design">
-                <StackPanel>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Reset settings: " FontSize="18" Margin="3" Grid.Column="0" />
-                        <Button Content="Reset" FontSize="18" Width="100" Margin="3" HorizontalAlignment="Center" Click="Reset_Click" Grid.Column="1" />
-                    </Grid>
-                    <Grid Margin="0,10,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Transparent chrome: " FontSize="18" Margin="3" Grid.Column="0" />
-                        <CheckBox Name="transparentChrome" Margin="0,6,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Click="TransparentChrome_Click" Grid.Column="1" />
-                    </Grid>
-                    <Grid Margin="0,10,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Corner radius: " FontSize="18" Margin="3" Grid.Column="0" />
-                        <CheckBox Name="cornerRadius" Margin="0,6,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Click="CornerRadius_Click" Grid.Column="1" />
-                    </Grid>
-                    <Grid Margin="0,10,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Rounded buttons: " FontSize="18" Margin="3" Grid.Column="0" />
-                        <CheckBox Name="roundedButtons" Margin="0,6,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Click="RoundedButtons_Click" Grid.Column="1" />
-                    </Grid>
-                    <Grid Margin="0,10,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Inactive chrome: " FontSize="18" Margin="3" Grid.Column="0" />
-                        <CheckBox Name="enableInactive" Margin="0,6,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Checked="EnableInactive_Checked" Unchecked="EnableInactive_Checked" Grid.Column="1" />
-                    </Grid>
-                    <Grid Margin="0,10,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Color options: " FontSize="18" Margin="3" Grid.Column="0" />
-                        <Button Name="pickColor" Margin="0,6,0,0" Height="30" Width="30" HorizontalAlignment="Center" Style="{StaticResource ColorButtonStyle}" Click="PickColor_Click" Grid.Column="1">
-                            <Button.Background>
-                                <LinearGradientBrush>
-                                    <GradientStop Color="#FF0000" Offset="0.1" />
-                                    <GradientStop Color="#FF6600" Offset="0.2" />
-                                    <GradientStop Color="#FF9400" Offset="0.3" />
-                                    <GradientStop Color="#EEC500" Offset="0.4" />
-                                    <GradientStop Color="#E0E000" Offset="0.5" />
-                                    <GradientStop Color="#8CC700" Offset="0.6" />
-                                    <GradientStop Color="#0FAD00" Offset="0.7" />
-                                    <GradientStop Color="#00A3C7" Offset="0.8" />
-                                    <GradientStop Color="#0064B5" Offset="0.9" />
-                                    <GradientStop Color="#0010A5" Offset="1" />
-                                </LinearGradientBrush>
-                            </Button.Background>
-                        </Button>
-                    </Grid>
-                </StackPanel>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Reset settings: " FontSize="18" Margin="3" Grid.Column="0" />
+                            <Button Content="Reset" FontSize="18" Width="100" Margin="3" HorizontalAlignment="Center" Click="Reset_Click" Grid.Column="1" />
+                        </Grid>
+                        <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Transparent chrome: " FontSize="18" Margin="3" Grid.Column="0" />
+                            <CheckBox Name="transparentChrome" Margin="0,6,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Click="TransparentChrome_Click" Grid.Column="1" />
+                        </Grid>
+                        <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Corner radius: " FontSize="18" Margin="3" Grid.Column="0" />
+                            <CheckBox Name="cornerRadius" Margin="0,6,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Click="CornerRadius_Click" Grid.Column="1" />
+                        </Grid>
+                        <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Rounded buttons: " FontSize="18" Margin="3" Grid.Column="0" />
+                            <CheckBox Name="roundedButtons" Margin="0,6,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Click="RoundedButtons_Click" Grid.Column="1" />
+                        </Grid>
+                        <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Inactive chrome: " FontSize="18" Margin="3" Grid.Column="0" />
+                            <CheckBox Name="enableInactive" Margin="0,6,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Checked="EnableInactive_Checked" Unchecked="EnableInactive_Checked" Grid.Column="1" />
+                        </Grid>
+                        <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Color options: " FontSize="18" Margin="3" Grid.Column="0" />
+                            <Button Name="pickColor" Margin="0,6,0,0" Height="30" Width="30" HorizontalAlignment="Center" Style="{StaticResource ColorButtonStyle}" Click="PickColor_Click" Grid.Column="1">
+                                <Button.Background>
+                                    <LinearGradientBrush>
+                                        <GradientStop Color="#FF0000" Offset="0.1" />
+                                        <GradientStop Color="#FF6600" Offset="0.2" />
+                                        <GradientStop Color="#FF9400" Offset="0.3" />
+                                        <GradientStop Color="#EEC500" Offset="0.4" />
+                                        <GradientStop Color="#E0E000" Offset="0.5" />
+                                        <GradientStop Color="#8CC700" Offset="0.6" />
+                                        <GradientStop Color="#0FAD00" Offset="0.7" />
+                                        <GradientStop Color="#00A3C7" Offset="0.8" />
+                                        <GradientStop Color="#0064B5" Offset="0.9" />
+                                        <GradientStop Color="#0010A5" Offset="1" />
+                                    </LinearGradientBrush>
+                                </Button.Background>
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
             </ui:ApplicationMenuItem>
             <ui:ApplicationMenuItem Header="Application">
-                <StackPanel>
-                    <Grid Margin="0,10,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <GroupBox Header="Motion Detection" Grid.Column="0" Grid.ColumnSpan="2" Padding="20">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="Skip frames: " FontSize="18" Margin="3" Grid.Column="0" />
-                                <ComboBox Name="mdSkipFrames" Width="150" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" DropDownClosed="MDSkipFrames_SelectionChanged">
-                                    <ComboBoxItem Content="1" />
-                                    <ComboBoxItem Content="2" />
-                                    <ComboBoxItem Content="3" />
-                                    <ComboBoxItem Content="4" />
-                                    <ComboBoxItem Content="5" />
-                                    <ComboBoxItem Content="6" />
-                                    <ComboBoxItem Content="7" />
-                                    <ComboBoxItem Content="8" />
-                                    <ComboBoxItem Content="9" />
-                                    <ComboBoxItem Content="10" />
-                                </ComboBox>
-                            </Grid>
-                        </GroupBox>
-                    </Grid>
-                    <Grid Margin="0,10,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <GroupBox Header="Edge Detection" Grid.Column="0" Grid.ColumnSpan="2" Padding="20">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Name="distanceText" Grid.Column="1" HorizontalAlignment="Center" Text="1" />
-                                <TextBlock Text="Distance from edge (threshold): " FontSize="18" Margin="3,20,3,3" Grid.Column="0" />
-                                <Slider x:Name="distanceThreshold" Minimum="1" Maximum="500" Margin="0,20,0,0" Background="{DynamicResource AccentBrush}" Width="150" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" SmallChange="1" LargeChange="10" TickFrequency="1" ValueChanged="DistanceThreshold_ValueChanged" />
-                            </Grid>
-                        </GroupBox>
-                    </Grid>
-                </StackPanel>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <GroupBox Header="Motion Detection" Grid.Column="0" Grid.ColumnSpan="2" Padding="20">
+                                <StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Skip frames in results: " FontSize="18" Margin="3" Grid.Column="0" />
+                                        <ComboBox Name="mdSkipFrames" Width="150" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" DropDownClosed="MDSkipFrames_SelectionChanged">
+                                            <ComboBoxItem Content="1" />
+                                            <ComboBoxItem Content="2" />
+                                            <ComboBoxItem Content="3" />
+                                            <ComboBoxItem Content="4" />
+                                            <ComboBoxItem Content="5" />
+                                            <ComboBoxItem Content="6" />
+                                            <ComboBoxItem Content="7" />
+                                            <ComboBoxItem Content="8" />
+                                            <ComboBoxItem Content="9" />
+                                            <ComboBoxItem Content="10" />
+                                        </ComboBox>
+                                    </Grid>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Skip frames in video: " FontSize="18" Margin="0,26,0,0" Grid.Column="0" />
+                                        <CheckBox x:Name="skipFramesInVideo" Margin="0,26,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Checked="SkipFramesInVideo_Checked" Unchecked="SkipFramesInVideo_Checked" />
+                                    </Grid>
+                                </StackPanel>
+                            </GroupBox>
+                        </Grid>
+                        <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <GroupBox Header="Edge Detection" Grid.Column="0" Grid.ColumnSpan="2" Padding="20">
+                                <StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Name="distanceText" Grid.Column="1" HorizontalAlignment="Center" Text="1" />
+                                        <TextBlock Text="Distance from edge (threshold): " FontSize="18" Margin="3,20,3,3" Grid.Column="0" />
+                                        <Slider x:Name="distanceThreshold" Minimum="1" Maximum="500" Margin="0,20,0,0" Background="{DynamicResource AccentBrush}" Width="150" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" SmallChange="1" LargeChange="10" TickFrequency="1" ValueChanged="DistanceThreshold_ValueChanged" />
+                                    </Grid>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Save distance from edge: " FontSize="18" Margin="0,26,0,0" Grid.Column="0" />
+                                        <CheckBox x:Name="saveDistanceFromEdge" Margin="0,26,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Checked="SaveDistanceFromEdge_Checked" Unchecked="SaveDistanceFromEdge_Checked" />
+                                    </Grid>
+                                </StackPanel>
+                            </GroupBox>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
             </ui:ApplicationMenuItem>
         </ui:ApplicationMenu>
     </ui:RibbonWindow.ApplicationMenu>

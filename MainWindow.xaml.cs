@@ -697,7 +697,7 @@ public partial class MainWindow : RibbonWindow
 
             OxyPlot.Series.LineSeries series = new()
             {
-                Title = $"Color intensity ({result.Name})",
+                Title = $"Color intensity - {result.Name}",
                 StrokeThickness = 1,
                 Color = color,
                 MarkerSize = 3,
@@ -976,7 +976,7 @@ public partial class MainWindow : RibbonWindow
 
             OxyPlot.Series.LineSeries series = new()
             {
-                Title = $"Distance ({result.Name})",
+                Title = $"Distance - {result.Name}",
                 StrokeThickness = 1,
                 Color = color,
                 MarkerSize = 3,
@@ -1048,14 +1048,27 @@ public partial class MainWindow : RibbonWindow
 
     public void CalculateET()
     {
-        List<List<(bool closer, int mSec)>> results = VideoLibrary.GetEdgeResults(videoFileName, drawingControl.Geometries, edgeContour, this);
+        bool distanceFromEdge = false;
+        int? skipFrames = null;
+
+        InvokeAction(() =>
+        {
+            distanceFromEdge = saveDistanceFromEdge.IsChecked == true;
+
+            if (skipFramesInVideo.IsChecked == true)
+            {
+                skipFrames = mdSkipFrames.SelectedIndex + 1;
+            }
+        });
+
+        List<List<(bool closer, double minimalDistance, int mSec)>> results = VideoLibrary.GetEdgeResults(videoFileName, drawingControl.Geometries, edgeContour, distanceFromEdge, skipFrames, this);
 
         allETResults.Clear();
         int i = 0;
 
         resultType = ResultTypes.EdgeDetection;
 
-        foreach (List<(bool dp, int mSec)> current in results)
+        foreach (List<(bool dp, double md, int mSec)> current in results)
         {
             if (current != null && current.Count > 0)
             {
@@ -1078,7 +1091,8 @@ public partial class MainWindow : RibbonWindow
                     {
                         Index = i + 1,
                         Time = ConvertToSeconds(p.mSec),
-                        DataValue = p.dp
+                        DataValue = p.dp,
+                        MinimalDistance = distanceFromEdge ? p.md : double.NaN
                     }).ToList()
                 });
             }
@@ -1114,7 +1128,9 @@ public partial class MainWindow : RibbonWindow
 
     private void DrawETPlot()
     {
+        bool distanceFE = saveDistanceFromEdge.IsChecked == true;
         int skipFrames = mdSkipFrames.SelectedIndex + 2;
+        bool sfiv = skipFramesInVideo.IsChecked == true;
 
         etPlot?.Model?.Series?.Clear();
         etPlot?.Model?.Axes?.Clear();
@@ -1124,7 +1140,7 @@ public partial class MainWindow : RibbonWindow
 
         PlotModel model = new()
         {
-            Title = "Closer to edge",
+            Title = distanceFE ? "Distance from edge" : "Closer to edge",
             PlotType = PlotType.XY,
             Background = OxyColor.FromRgb(backColor.R, backColor.G, backColor.B),
             TextColor = OxyColor.FromRgb(foreColor.R, foreColor.G, foreColor.B),
@@ -1150,7 +1166,7 @@ public partial class MainWindow : RibbonWindow
         {
             index++;
 
-            if ((index - 1) % skipFrames != 0)
+            if (sfiv && (index - 1) % skipFrames != 0)
             {
                 continue;
             }
@@ -1160,18 +1176,18 @@ public partial class MainWindow : RibbonWindow
 
             OxyPlot.Series.LineSeries series = new()
             {
-                Title = $"Closer to edge ({result.Name})",
+                Title = distanceFE ? $"Distance from edge - {result.Name}" : $"Closer to edge - {result.Name}",
                 StrokeThickness = 1,
                 Color = color,
                 MarkerSize = 3,
                 MarkerFill = markerColor,
                 MarkerType = MarkerType.Circle,
-                TrackerFormatString = "{0}\n{1}:\t\t{2:0.00}\n{3}:\t{4:0.00}"
+                TrackerFormatString = distanceFE ? "{0}\n{1}:\t\t\t{2:0.00}\n{3}:\t{4:0.00}" : "{0}\n{1}:\t\t{2:0.00}\n{3}:\t{4:0.00}"
             };
 
             foreach (var el in result.Result)
             {
-                series.Points.Add(new DataPoint(Math.Round(ConvertToSecondsDouble(el.Time), 2), el.DataValue ? 1 : 0));
+                series.Points.Add(new DataPoint(Math.Round(ConvertToSecondsDouble(el.Time), 2), distanceFE ? el.MinimalDistance : (el.DataValue ? 1 : 0)));
             }
 
             model.Series.Add(series);
@@ -1208,7 +1224,7 @@ public partial class MainWindow : RibbonWindow
         {
             Key = "Y",
             Position = AxisPosition.Left,
-            Title = "Closer to edge",
+            Title = distanceFE ? "Distance from edge" : "Closer to edge",
             TitleFontSize = 12,
             TitleFontWeight = 700,
             MinorTicklineColor = foreOxy,
@@ -2251,18 +2267,31 @@ public partial class MainWindow : RibbonWindow
     {
         var skipFramesObj = ApplicationSettings.Settings.Get("MDSkipFrames");
 
-        if (skipFramesObj != null)
+        if (skipFramesObj is int skipFrames)
         {
-            int skipFrames = (int)skipFramesObj - 1;
+            skipFrames -= 1;
             mdSkipFrames.SelectedIndex = skipFrames;
         }
 
         var distanceT = ApplicationSettings.Settings.Get("ThresholdDistance");
 
-        if (distanceT != null)
+        if (distanceT is int dT)
         {
-            int dT = (int)distanceT;
             distanceThreshold.Value = dT;
+        }
+
+        var sfiv = ApplicationSettings.Settings.Get("SkipFramesInVideo");
+
+        if (sfiv is bool sf)
+        {
+            skipFramesInVideo.IsChecked = sf;
+        }
+
+        var sdfe = ApplicationSettings.Settings.Get("SaveDistanceFromEdge");
+
+        if (sdfe is bool sd)
+        {
+            saveDistanceFromEdge.IsChecked = sd;
         }
     }
 
@@ -2281,6 +2310,22 @@ public partial class MainWindow : RibbonWindow
         if (loadingComplete)
         {
             ApplicationSettings.Settings.Set("ThresholdDistance", (int)distanceThreshold.Value);
+        }
+    }
+
+    private void SaveDistanceFromEdge_Checked(object sender, RoutedEventArgs e)
+    {
+        if (loadingComplete)
+        {
+            ApplicationSettings.Settings.Set("SaveDistanceFromEdge", saveDistanceFromEdge.IsChecked == true);
+        }
+    }
+
+    private void SkipFramesInVideo_Checked(object sender, RoutedEventArgs e)
+    {
+        if (loadingComplete)
+        {
+            ApplicationSettings.Settings.Set("SkipFramesInVideo", skipFramesInVideo.IsChecked == true);
         }
     }
 }
