@@ -122,7 +122,7 @@
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="Skip frames in results: " FontSize="18" Margin="3" Grid.Column="0" />
+                                        <TextBlock Text="Skip frames in the results: " FontSize="18" Margin="3" Grid.Column="0" />
                                         <ComboBox Name="mdSkipFrames" Width="150" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" DropDownClosed="MDSkipFrames_SelectionChanged">
                                             <ComboBoxItem Content="1" />
                                             <ComboBoxItem Content="2" />
@@ -141,7 +141,7 @@
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="Skip frames in video: " FontSize="18" Margin="0,26,0,0" Grid.Column="0" />
+                                        <TextBlock Text="Skip frames in the video: " FontSize="18" Margin="0,26,0,0" Grid.Column="0" />
                                         <CheckBox x:Name="skipFramesInVideo" Margin="0,26,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Checked="SkipFramesInVideo_Checked" Unchecked="SkipFramesInVideo_Checked" />
                                     </Grid>
                                 </StackPanel>
@@ -160,7 +160,7 @@
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Name="distanceText" Grid.Column="1" HorizontalAlignment="Center" Text="1" />
-                                        <TextBlock Text="Distance from edge (threshold): " FontSize="18" Margin="3,20,3,3" Grid.Column="0" />
+                                        <TextBlock Text="Distance from the edge (threshold): " FontSize="18" Margin="3,20,3,3" Grid.Column="0" />
                                         <Slider x:Name="distanceThreshold" Minimum="1" Maximum="500" Margin="0,20,0,0" Background="{DynamicResource AccentBrush}" Width="150" Height="30" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" SmallChange="1" LargeChange="10" TickFrequency="1" ValueChanged="DistanceThreshold_ValueChanged" />
                                     </Grid>
                                     <Grid>
@@ -168,7 +168,7 @@
                                             <ColumnDefinition Width="*" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="Save distance from edge: " FontSize="18" Margin="0,26,0,0" Grid.Column="0" />
+                                        <TextBlock Text="Save distance from the edge: " FontSize="18" Margin="0,26,0,0" Grid.Column="0" />
                                         <CheckBox x:Name="saveDistanceFromEdge" Margin="0,26,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Checked="SaveDistanceFromEdge_Checked" Unchecked="SaveDistanceFromEdge_Checked" />
                                     </Grid>
                                 </StackPanel>
