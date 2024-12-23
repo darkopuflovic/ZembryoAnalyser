@@ -4,6 +4,7 @@ using PdfSharp.Pdf;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Media;
 
@@ -181,6 +182,9 @@ public static class PDFExporter
 
     public static void ExportPDF(string fileName, List<ResultSetET> results, MemoryStream image)
     {
+        double? md = results.FirstOrDefault()?.Result?.FirstOrDefault()?.MinimalDistance;
+        bool hasMD = !double.IsNaN(md ?? double.NaN);
+
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
         PdfDocument document = new();
@@ -194,7 +198,7 @@ public static class PDFExporter
             double pageMargin = 20;
             double textMargin = 23;
             double maxTableWidth = pdfPage.Width - (2 * pageMargin);
-            double valueColumnWidth = maxTableWidth / 3;
+            double valueColumnWidth = maxTableWidth / (hasMD ? 4 : 3);
             double rowHeight = 20;
 
             XGraphics graph = XGraphics.FromPdfPage(pdfPage);
@@ -226,6 +230,12 @@ public static class PDFExporter
             graph.DrawRectangle(borderColor, subTitleBrush, pageMargin + (valueColumnWidth * 2), pageMargin + rowHeight, valueColumnWidth, rowHeight);
             tf.DrawString("Value", fontPodNaslov, XBrushes.Black, new XRect(textMargin + (valueColumnWidth * 2), textMargin + rowHeight, valueColumnWidth, rowHeight));
 
+            if (hasMD)
+            {
+                graph.DrawRectangle(borderColor, subTitleBrush, pageMargin + (valueColumnWidth * 3), pageMargin + rowHeight, valueColumnWidth, rowHeight);
+                tf.DrawString("Edge distance", fontPodNaslov, XBrushes.Black, new XRect(textMargin + (valueColumnWidth * 3), textMargin + rowHeight, valueColumnWidth, rowHeight));
+            }
+
             int rowCount = 2;
 
             foreach (ETData data in result.Result)
@@ -237,7 +247,13 @@ public static class PDFExporter
                 tf.DrawString(data.Time.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture), fontPodNaslov, XBrushes.Black, new XRect(textMargin + valueColumnWidth, textMargin + (rowHeight * rowCount), valueColumnWidth, rowHeight));
 
                 graph.DrawRectangle(borderColor, pageMargin + (valueColumnWidth * 2), pageMargin + (rowHeight * rowCount), valueColumnWidth, rowHeight);
-                tf.DrawString(data.DataValue.ToString(), fontPodNaslov, XBrushes.Black, new XRect(textMargin + (valueColumnWidth * 2), textMargin + (rowHeight * rowCount), valueColumnWidth, rowHeight));
+                tf.DrawString(data.DataValue.ToString(CultureInfo.InvariantCulture), fontPodNaslov, XBrushes.Black, new XRect(textMargin + (valueColumnWidth * 2), textMargin + (rowHeight * rowCount), valueColumnWidth, rowHeight));
+
+                if (hasMD)
+                {
+                    graph.DrawRectangle(borderColor, pageMargin + (valueColumnWidth * 3), pageMargin + (rowHeight * rowCount), valueColumnWidth, rowHeight);
+                    tf.DrawString(data.MinimalDistance.ToString("N2", CultureInfo.InvariantCulture), fontPodNaslov, XBrushes.Black, new XRect(textMargin + (valueColumnWidth * 3), textMargin + (rowHeight * rowCount), valueColumnWidth, rowHeight));
+                }
 
                 if (CheckNewPage(pdfPage, rowCount, pageMargin, rowHeight))
                 {

@@ -101,7 +101,7 @@ public static class ExcelExport
                 {
                     DataType = CellValues.String,
                     CellReference = $"A{result.Index + 1}",
-                    CellValue = new CellValue(result.Index.ToString(CultureInfo.InvariantCulture)),
+                    CellValue = new CellValue($"{result.Index}."),
                     StyleIndex = 0
                 });
 
@@ -242,7 +242,7 @@ public static class ExcelExport
                 {
                     DataType = CellValues.String,
                     CellReference = $"A{result.Index + 1}",
-                    CellValue = new CellValue(result.Index.ToString(CultureInfo.InvariantCulture)),
+                    CellValue = new CellValue($"{result.Index}."),
                     StyleIndex = 0
                 });
 
@@ -294,6 +294,9 @@ public static class ExcelExport
 
     public static void ExportXLSX(string fileName, List<ResultSetET> data)
     {
+        double? md = data.FirstOrDefault()?.Result?.FirstOrDefault()?.MinimalDistance;
+        bool hasMD = !double.IsNaN(md ?? double.NaN);
+
         using SpreadsheetDocument excel = SpreadsheetDocument.Create(fileName, SpreadsheetDocumentType.Workbook);
 
         WorkbookPart part = excel.AddWorkbookPart();
@@ -343,6 +346,17 @@ public static class ExcelExport
             columns.Append(secondColumn);
             columns.Append(thirdColumn);
 
+            if (hasMD)
+            {
+                columns.Append(new Column()
+                {
+                    Min = 4,
+                    Max = 4,
+                    Width = 15,
+                    CustomWidth = true
+                });
+            }
+
             worksheet.Append(columns);
 
             SheetData sheetData = new();
@@ -373,6 +387,17 @@ public static class ExcelExport
                 StyleIndex = 1
             });
 
+            if (hasMD)
+            {
+                row.Append(new Cell
+                {
+                    DataType = CellValues.String,
+                    CellReference = $"D1",
+                    CellValue = new CellValue("Minimal distance"),
+                    StyleIndex = 1
+                });
+            }
+
             sheetData.Append(row);
 
             foreach (ETData result in results)
@@ -383,7 +408,7 @@ public static class ExcelExport
                 {
                     DataType = CellValues.String,
                     CellReference = $"A{result.Index + 1}",
-                    CellValue = new CellValue(result.Index.ToString(CultureInfo.InvariantCulture)),
+                    CellValue = new CellValue($"{result.Index}."),
                     StyleIndex = 0
                 });
 
@@ -399,9 +424,20 @@ public static class ExcelExport
                 {
                     DataType = CellValues.String,
                     CellReference = $"C{result.Index + 1}",
-                    CellValue = new CellValue(result.DataValue),
+                    CellValue = new CellValue(result.DataValue.ToString(CultureInfo.InvariantCulture)),
                     StyleIndex = 0
                 });
+
+                if (hasMD)
+                {
+                    row.Append(new Cell
+                    {
+                        DataType = CellValues.String,
+                        CellReference = $"D{result.Index + 1}",
+                        CellValue = new CellValue(result.MinimalDistance.ToString("N2", CultureInfo.InvariantCulture)),
+                        StyleIndex = 0
+                    });
+                }
 
                 sheetData.Append(row);
             }
@@ -528,14 +564,24 @@ public static class ExcelExport
         {
             FontId = 0,
             FillId = 0,
-            BorderId = 0
+            BorderId = 0,
+            Alignment = new Alignment()
+            {
+                Horizontal = HorizontalAlignmentValues.Left,
+                Vertical = VerticalAlignmentValues.Center
+            }
         };
 
         CellFormat headerFormat = new()
         {
             FontId = 1,
             FillId = 2,
-            BorderId = 1
+            BorderId = 1,
+            Alignment = new Alignment()
+            {
+                Horizontal = HorizontalAlignmentValues.Left,
+                Vertical = VerticalAlignmentValues.Center
+            }
         };
 
         CellFormats cellformats = new();

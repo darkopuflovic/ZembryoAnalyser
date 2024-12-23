@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -31,10 +30,21 @@ public static class CsvExport
 
     public static void ExportCsv(string fileName, List<ResultSetET> results)
     {
-        Dictionary<int, List<string>> data = GetValues(results);
+        double? md = results.FirstOrDefault()?.Result?.FirstOrDefault()?.MinimalDistance;
+        bool hasMD = !double.IsNaN(md ?? double.NaN);
+
+        List<string> cols = ["Index", "Time", "Value"];
+
+        if (hasMD)
+        {
+            cols.Add("MinimalDistance");
+        }
+
+        Dictionary<int, List<string>> data = GetValues(results, hasMD);
+
         var els =
             from n in results.Select(p => p.Name)
-            from c in new List<string> { "Index", "Time", "Value" }
+            from c in cols
             select $"{n} - {c}";
         GenerateCSV(fileName, els.ToList(), data);
     }
@@ -69,7 +79,7 @@ public static class CsvExport
 
                 row.Add(dataRow.Index.ToString(CultureInfo.InvariantCulture));
                 row.Add(dataRow.Time.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture));
-                row.Add(Math.Round(dataRow.DataValue, 2).ToString("N2", CultureInfo.InvariantCulture));
+                row.Add(dataRow.DataValue.ToString("N2", CultureInfo.InvariantCulture));
             }
 
             dict.Add(i, row);
@@ -103,7 +113,7 @@ public static class CsvExport
         return dict;
     }
 
-    private static Dictionary<int, List<string>> GetValues(List<ResultSetET> allResults)
+    private static Dictionary<int, List<string>> GetValues(List<ResultSetET> allResults, bool hasMD)
     {
         Dictionary<int, List<string>> dict = [];
 
@@ -119,7 +129,12 @@ public static class CsvExport
 
                 row.Add(dataRow.Index.ToString(CultureInfo.InvariantCulture));
                 row.Add(dataRow.Time.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture));
-                row.Add(dataRow.DataValue.ToString());
+                row.Add(dataRow.DataValue.ToString(CultureInfo.InvariantCulture));
+
+                if (hasMD)
+                {
+                    row.Add(dataRow.MinimalDistance.ToString("N2", CultureInfo.InvariantCulture));
+                }
             }
 
             dict.Add(i, row);

@@ -22,6 +22,7 @@ using System.Windows.Controls.Primitives;
 using System.IO;
 using System.Windows.Media.Imaging;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.ComponentModel;
 using System.Windows.Interop;
 using System.Windows.Threading;
@@ -89,7 +90,8 @@ public partial class MainWindow : RibbonWindow
          options = new()
          {
              WriteIndented = true,
-             PropertyNamingPolicy = null
+             PropertyNamingPolicy = null,
+             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
          };
 
         _ = CommandBindings.Add(new CommandBinding(ApplicationCommands.Help, (sender, e) =>
@@ -1704,7 +1706,8 @@ public partial class MainWindow : RibbonWindow
                                 {
                                     Index = p.Index,
                                     Time = p.Time.ToString("hh':'mm':'ss'.'fff", CultureInfo.InvariantCulture),
-                                    Value = p.DataValue
+                                    Value = p.DataValue,
+                                    EdgeDistance = double.IsNaN(p.MinimalDistance) ? null : Math.Round(p.MinimalDistance, 2)
                                 }).ToList()
                             }).ToList();
 
@@ -2305,7 +2308,7 @@ public partial class MainWindow : RibbonWindow
 
     private void DistanceThreshold_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
-        distanceText.Text = ((int)distanceThreshold.Value).ToString();
+        distanceText.Text = ((int)distanceThreshold.Value).ToString(CultureInfo.InvariantCulture);
 
         if (loadingComplete)
         {
